@@ -47,8 +47,8 @@ classdef PsychHandle < handle
 	    end
 	
 	    for pair = reshape(varargin, 2, []) %# pair is {propName;propValue}
-	        input_name = lower(pair{1}); %# make case insensitive
-	        if any(strcmp(input_name, opt_names))
+	        input_name = pair{1}; %# make case insensitive
+	        if any(strcmpi(input_name, opt_names))
 	           % overwrite opts. If you want you can test for the right class here
 	           % Also, if you find out that there is an option you keep getting wrong,
 	           % you can use "if strcmp(input_name, 'problemOption'),testMore,end"-statements
