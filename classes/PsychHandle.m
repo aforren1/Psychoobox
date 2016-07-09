@@ -1,4 +1,4 @@
-classdef PsychHandle < handle
+classdef (Abstract) PsychHandle < handle
 % PsychHandle (Abstract) superclass for Psychoobox.
 %
 % Provides generic getters/setters/closers. Does not do much more than that.

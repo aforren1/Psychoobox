@@ -1,6 +1,9 @@
 classdef PsychScreen < PsychHandle
-
-    properties (access = Private)
+%
+% Example:
+% scrn = PsychScreen(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
+%
+    properties (SetAccess = private)
         % settings
         pointer;
         on_screen;
@@ -11,22 +14,6 @@ classdef PsychScreen < PsychHandle
         stereo_mode;
         multisample;
         imaging_mode;
-        p = inputParser;
-        p.FunctionName = 'PsychScreen';
-        p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
-        p.addRequired('on_screen', @(x) islogical(x));
-        p.addOptional('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
-        p.addOptional('color', [], @(x) isempty(x) || (ismatrix(x)));
-        p.addOptional('pixel_size', [], @(x) isempty(x) || isnumeric(x));
-        p.addOptional('number_buffers', [], @(x) isempty(x) || x > 0);
-        p.addOptional('stereo_mode', [], @(x) isempty(x) || (x >= 0 && x <= 10));
-        p.addOptional('multisample', [], @(x) isempty(x) || (isnumeric(x) && x > 0));
-        p.addOptional('imaging_mode', [], @(x) isempty(x) || (isnumeric(x) && x >= 0));
-        p.addOptional('skip_sync_tests', false, @(x) islogical(x));
-        p.addOptional('visual_debug_level', [], @(x) isempty(x) || (isnumeric(x) && x >= 0 && x <= 5));
-        p.addOptional('conserve_vram', [], @(x) isempty(x) || (isnumeric(x) && x >= 0 && x <= 3));
-        p.addOptional('enable_3d', [], @(x) isempty(x) || islogical(x)); %??
-
         % derived quantities
         flip_interval;
         frame_rate;
@@ -34,15 +21,40 @@ classdef PsychScreen < PsychHandle
 
     methods
         function self = PsychScreen(pointer, on_screen, varargin)
-            parse(p, varargin{:});
-            if p.Results.on_screen
-                tempstr = 'OpenWindow';
-            else
-                tempstr = 'OpenOffscreenWindow';
+            p = inputParser;
+            p.FunctionName = 'PsychScreen';
+            p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
+            p.addRequired('on_screen', @(x) islogical(x));
+            p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
+            p.addParamValue('color', [], @(x) isempty(x) || (ismatrix(x)));
+            p.addParamValue('pixel_size', 24, @(x) isempty(x) || isnumeric(x));
+            p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
+            p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));
+            p.addParamValue('multisample', 1, @(x) isempty(x) || (isnumeric(x) && x > 0));
+            p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
+            p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
+            p.parse(pointer, on_screen, varargin{:});
+            opts = p.Results;
+            if opts.skip_sync_tests
+                Screen('Preference', 'SkipSyncTests', 2);
             end
-            [self.pointer, self.rect]=Screen(tempstr,windowPtrOrScreenNumber [,color] [,rect] [,pixelSize] [,numberOfBuffers] [,stereomode] [,multisample][,imagingmode][,specialFlags][,clientRect]);
-
+            opts
+            if opts.on_screen
+                [self.pointer, self.rect] = Screen('OpenWindow', pointer,...
+                                                   opts.color, opts.rect,...
+                                                   opts.pixel_size, opts.number_buffers,...
+                                                   opts.stereo_mode, opts.multisample, ...
+                                                   opts.imaging_mode, [], []);
+            else
+                [self.pointer, self.rect] = Screen('OpenOffscreenWindow', ...
+                                                   pointer, opts.color, ...
+                                                   opts.rect, opts.pixel_size,...
+                                                   [], opts.multisample);
+            end
             self.flip_interval = Screen('GetFlipInterval', self.pointer);
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
         end
 
         function Set(self, property, value)
