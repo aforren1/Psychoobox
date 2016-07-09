@@ -3,7 +3,7 @@ classdef PsychScreen < PsychHandle
 % Example:
 % scrn = PsychScreen(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
 %
-    properties (SetAccess = private)
+    properties (SetAccess = private, GetAccess = private)
         % settings
         pointer;
         on_screen;
@@ -14,6 +14,7 @@ classdef PsychScreen < PsychHandle
         stereo_mode;
         multisample;
         imaging_mode;
+        skip_sync_tests;
         % derived quantities
         flip_interval;
         frame_rate;
@@ -38,7 +39,7 @@ classdef PsychScreen < PsychHandle
             if opts.skip_sync_tests
                 Screen('Preference', 'SkipSyncTests', 2);
             end
-            opts
+
             if opts.on_screen
                 [self.pointer, self.rect] = Screen('OpenWindow', pointer,...
                                                    opts.color, opts.rect,...
@@ -52,6 +53,7 @@ classdef PsychScreen < PsychHandle
                                                    [], opts.multisample);
             end
             self.flip_interval = Screen('GetFlipInterval', self.pointer);
+            self.frame_rate = Screen('FrameRate', self.pointer);
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
@@ -74,8 +76,15 @@ classdef PsychScreen < PsychHandle
         end
 
         function Close(self)
-            Screen('Close', self.pointer);
+            sca;
+            %Screen('Close', self.pointer);
             delete(self);
+        end
+    end
+
+    methods (Static)
+        function screens = Screens(self)
+            screens = Screen('Screens');
         end
     end
 
