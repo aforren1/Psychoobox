@@ -58,11 +58,11 @@ classdef PsychScreen < PsychHandle
         end
 
         function Set(self, property, value)
+            Set@PsychHandle(self, property, value);
             switch property
                 case 'frame_rate'
                     Screen('FrameRate', self.pointer, 2, value);
                 otherwise
-                    self.(property) = value;
             end
         end
 
