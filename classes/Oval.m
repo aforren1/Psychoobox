@@ -2,14 +2,10 @@ classdef Oval < PsychFrames
 
     methods
         function self = Oval(varargin)
-            p = inputParser;
-            p.FunctionName = 'Oval';
-            p.addParamValue('fill_color', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('frame_color', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('rect', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p.FunctionName = 'Oval';
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
+            % check whether frame, fill, or both
             if isempty(opts.fill_color) && isempty(opts.frame_color)
                 error('Need to specify at least one color!');
             end
@@ -20,6 +16,10 @@ classdef Oval < PsychFrames
             else
                 p.type = 'FillFrame';
             end
+            % shuffle options into the obj
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
 
         end
         function Draw(self, pointer)
@@ -28,14 +28,10 @@ classdef Oval < PsychFrames
             end
 
             if strcmpi(self.type, 'FrameOval') || strcmpi(self.type, 'FillFrame')
-                Screen('FrameOval', pointer, self.frame_color, self.rect,...
-                       self.pen_width, self.pen_height, self.)
+                Screen('FrameOval', pointer, self.frame_color, self.rect, self.pen_width);
             end
         end
 
     end
-Screen('FillOval', windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
-Screen('FrameOval', windowPtr [,color] [,rect] [,penWidth] [,penHeight] [,penMode]);
-
 
 end
