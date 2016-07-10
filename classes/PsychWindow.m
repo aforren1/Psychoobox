@@ -3,7 +3,7 @@ classdef PsychWindow < PsychHandle
 % Example:
 % scrn = PsychWindow(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
 %
-    properties (SetAccess = private, GetAccess = private)
+    properties (SetAccess = protected, GetAccess = protected)
         % settings
         pointer;
         on_screen;
@@ -98,7 +98,7 @@ classdef PsychWindow < PsychHandle
             end
             time_elapsed = Screen('DrawingFinished', self.pointer, dont_clear, sync);
         end
-        
+
     end % end methods
 
     methods (Static)

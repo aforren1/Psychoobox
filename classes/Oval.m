@@ -30,8 +30,6 @@ classdef Oval < PsychFrames
             if strcmpi(self.type, 'FrameOval') || strcmpi(self.type, 'FillFrame')
                 Screen('FrameOval', pointer, self.frame_color, self.rect, self.pen_width);
             end
-        end
-
-    end
-
-end
+        end % end Draw
+    end % end methods
+end % end classdef

@@ -1,6 +1,6 @@
 classdef Poly < PsychFrames
 
-    properties (SetAccess = private, GetAccess = private)
+    properties (SetAccess = protected, GetAccess = protected)
         is_convex;
         point_list;
     end

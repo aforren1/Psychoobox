@@ -1,5 +1,4 @@
 classdef Rectangle < PsychFrames
-
     methods
         function self = Rectangle(varargin)
             self.p.FunctionName = 'Rectangle';
@@ -32,7 +31,3 @@ classdef Rectangle < PsychFrames
         end % end Draw
     end % end methods
 end % end classdef
-
-
-Screen('FillRect', windowPtr [,color] [,rect] );
-Screen('FrameRect', windowPtr [,color] [,rect] [,penWidth]);

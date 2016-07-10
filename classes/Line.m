@@ -1,5 +1,5 @@
 classdef Line < PsychHandle
-    properties (SetAccess = private, GetAccess = private)
+    properties (SetAccess = protected, GetAccess = protected)
         color;
         from_h;
         from_v;
@@ -11,13 +11,14 @@ classdef Line < PsychHandle
 
     methods
         function self = Line(varargin)
-            p.inputParser;
-            p.addParamValue('color',  [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('from_h', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('from_v', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('to_h', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('to_v', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+            self.p = inputParser;
+            self.p.FunctionName = 'Line';
+            self.p.addParamValue('color',  [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('from_h', [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('from_v', [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('to_h', [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('to_v', [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
             self.p.parse(varargin{:});
             opts = self.p.Results;
             for fns = fieldnames(opts)'
@@ -30,5 +31,5 @@ classdef Line < PsychHandle
                    self.to_h, self.to_v, self.pen_width);
         end
 
-
-Screen('DrawLine', windowPtr [,color], fromH, fromV, toH, toV [,penWidth]);
+    end
+end
