@@ -1,7 +1,7 @@
-classdef PsychScreen < PsychHandle
+classdef PsychWindow < PsychHandle
 %
 % Example:
-% scrn = PsychScreen(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
+% scrn = PsychWindow(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
 %
     properties (SetAccess = private, GetAccess = private)
         % settings
@@ -21,9 +21,9 @@ classdef PsychScreen < PsychHandle
     end
 
     methods
-        function self = PsychScreen(pointer, on_screen, varargin)
+        function self = PsychWindow(pointer, on_screen, varargin)
             p = inputParser;
-            p.FunctionName = 'PsychScreen';
+            p.FunctionName = 'PsychWindow';
             p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
             p.addRequired('on_screen', @(x) islogical(x));
             p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
@@ -80,12 +80,19 @@ classdef PsychScreen < PsychHandle
             %Screen('Close', self.pointer);
             delete(self);
         end
-    end
+
+        function ToFront(self)
+            Screen('WindowToFront', self.pointer);
+        end
+
+        function Wipe(self, color) % or Clear?
+            Screen('FillRect', self.pointer, color, self.rect);
+        end
+    end % end methods
 
     methods (Static)
         function screens = Screens(self)
             screens = Screen('Screens');
         end
-    end
-
-end
+    end % end static methods
+end % end classdef

@@ -1,6 +1,6 @@
 function p = testparse(req1, req2, varargin);
     p = inputParser;
-    p.FunctionName = 'PsychScreen';
+    p.FunctionName = 'testparse';
     p.addRequired('req1', @(x) isnumeric(x));
     p.addRequired('req2', @(x) isnumeric(x));
     p.addParamValue('color', 'f', @(x) ischar(x));
