@@ -88,6 +88,17 @@ classdef PsychWindow < PsychHandle
         function Wipe(self, color) % or Clear?
             Screen('FillRect', self.pointer, color, self.rect);
         end
+
+        function time_elapsed = DrawingFinished(self, dont_clear, sync)
+            if ~exist('dont_clear')
+                dont_clear = [];
+            end
+            if ~exist('sync')
+                sync = [];
+            end
+            time_elapsed = Screen('DrawingFinished', self.pointer, dont_clear, sync);
+        end
+        
     end % end methods
 
     methods (Static)
