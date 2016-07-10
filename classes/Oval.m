@@ -1,20 +1,36 @@
 classdef Oval < PsychFrames
 
-    properties (SetAccess = private, GetAccess = private)
-        perfect_up_to_max_diameter;
-        pen_width;
-        pen_height;
-    end
-
     methods
         function self = Oval(varargin)
             p = inputParser;
             p.FunctionName = 'Oval';
-            p.addParamValue('color', [255 255 255], @(x) isnumeric(x));
-            p.addParamValue('rect', [], @(x) isempty(x) || (isnumeric(x) && length(x) == 4));
-            p.addParamValue('pen_width', 0, @(x) isnumeric(x));
-            p.addParamValue('pen_height', 0, @(x) isnumeric(x));
-            
+            p.addParamValue('fill_color', [], @(x) isempty(x) || isnumeric(x));
+            p.addParamValue('frame_color', [], @(x) isempty(x) || isnumeric(x));
+            p.addParamValue('rect', [], @(x) isempty(x) || isnumeric(x));
+            p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+            p.parse(varargin{:});
+            opts = p.Results;
+            if isempty(opts.fill_color) && isempty(opts.frame_color)
+                error('Need to specify at least one color!');
+            end
+            if isempty(opts.fill_color)
+                p.type = 'FrameOval';
+            elseif isempty(opts.frame_color)
+                p.type = 'FillOval';
+            else
+                p.type = 'FillFrame';
+            end
+
+        end
+        function Draw(self, pointer)
+            if strcmpi(self.type, 'FillOval') || strcmpi(self.type, 'FillFrame')
+                Screen('FillOval', pointer, self.fill_color, self.rect);
+            end
+
+            if strcmpi(self.type, 'FrameOval') || strcmpi(self.type, 'FillFrame')
+                Screen('FrameOval', pointer, self.frame_color, self.rect,...
+                       self.pen_width, self.pen_height, self.)
+            end
         end
 
     end
