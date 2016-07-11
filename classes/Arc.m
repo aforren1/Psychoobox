@@ -7,28 +7,30 @@ classdef Arc < PsychFrames
 
     methods
         function self = Arc(varargin)
+            self = self@PsychFrames;
             self.p.FunctionName = 'Arc';
             self.p.addParamValue('start_angle', 0, @(x) isnumeric(x));
             self.p.addParamValue('arc_angle', 0, @(x) isnumeric(x));
             self.p.parse(varargin{:});
             opts = self.p.Results;
 
+            % shuffle options into the obj
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
+
             % check whether frame, fill, or both
             if isempty(opts.fill_color) && isempty(opts.frame_color)
                 error('Need to specify at least one color!');
             end
             if isempty(opts.fill_color)
-                p.type = 'FillArc';
+                self.type = 'FillArc';
             elseif isempty(opts.frame_color)
-                p.type = 'FrameArc'; % framearc ?= drawarc + thickness?
+                self.type = 'FrameArc'; % framearc ?= drawarc + thickness?
             else
-                p.type = 'FillFrame';
+                self.type = 'FillFrame';
             end
 
-            % shuffle options into the obj
-            for fns = fieldnames(opts)'
-                self.(fns{1}) = opts.(fns{1});
-            end
         end % end constructor
 
         function Draw(self, pointer)

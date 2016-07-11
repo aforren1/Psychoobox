@@ -1,22 +1,24 @@
 classdef Rectangle < PsychFrames
     methods
         function self = Rectangle(varargin)
+            self = self@PsychFrames;
             self.p.FunctionName = 'Rectangle';
             self.p.parse(varargin{:});
             opts = self.p.Results;
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
 
             if isempty(opts.fill_color) && isempty(opts.frame_color)
                 error('Need to specify at least one color!');
             end
+
             if isempty(opts.fill_color)
-                p.type = 'FillRect';
+                self.type = 'FillRect';
             elseif isempty(opts.frame_color)
-                p.type = 'FrameRect'; % framearc ?= drawarc + thickness?
+                self.type = 'FrameRect'; % framearc ?= drawarc + thickness?
             else
-                p.type = 'FillFrame';
-            end
-            for fns = fieldnames(opts)'
-                self.(fns{1}) = opts.(fns{1});
+                self.type = 'FillFrame';
             end
         end % end constructor
 

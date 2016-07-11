@@ -7,28 +7,30 @@ classdef Poly < PsychFrames
 
     methods
         function self = Poly(varargin)
+            self = self@PsychFrames;
             self.p.FunctionName = 'Poly';
             self.p.addParamValue('is_convex', true, @(x) islogical(x));
             self.p.addParamValue('point_list', [], @(x) isempty(x) || isnumeric(x))
             self.p.parse(varargin{:});
             opts = self.p.Results;
+                        
+            % shuffle options into the obj
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
 
             % check whether frame, fill, or both
             if isempty(opts.fill_color) && isempty(opts.frame_color)
                 error('Need to specify at least one color!');
             end
             if isempty(opts.fill_color)
-                p.type = 'FillPoly';
+                self.type = 'FillPoly';
             elseif isempty(opts.frame_color)
-                p.type = 'FramePoly';
+                self.type = 'FramePoly';
             else
-                p.type = 'FillFrame';
+                self.type = 'FillFrame';
             end
 
-            % shuffle options into the obj
-            for fns = fieldnames(opts)'
-                self.(fns{1}) = opts.(fns{1});
-            end
         end % end constructor
 
         function Draw(self, pointer)
