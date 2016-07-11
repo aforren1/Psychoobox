@@ -20,7 +20,7 @@ classdef PsychAudio < PsychHandle
             p.FunctionName = 'PsychAudio';
             p.addParamValue('device_id', [], @(x) isempty(x) || isnumeric(x));
             p.addParamValue('mode', 1, @(x) any(x == [1, 2, 3, 7, 9, 10, 11]));
-            p.addParamValue('req_latency_class', 0, @(x) any(x == 1:4));
+            p.addParamValue('req_latency_class', 1, @(x) any(x == 0:4));
             p.addParamValue('freq', 44100, @(x) isnumeric(x));
             p.addParamValue('channels', 2, @(x) isnumeric(x));
             p.addParamValue('buffer_size', [], @(x) isnumeric(x));
@@ -41,7 +41,11 @@ classdef PsychAudio < PsychHandle
                                           opts.req_latency_class, opts.freq, ...
                                           opts.channels, opts.buffer_size, ...
                                           opts.suggested_latency, opts.select_channels);
-            PsychPortAudio('Start', self.pointer, 0, 0, 1, 0);
+            PsychPortAudio('Start', self.pointer, 0, 0, 1);
+            self.slaves = struct('pointer', [], ...
+                                 'mode', [], ...
+                                 'channels', [], ...
+                                 'select_channels', []);
         end
 
         function AddSlave(self, index, varargin)
@@ -53,10 +57,9 @@ classdef PsychAudio < PsychHandle
             p.parse(varargin{:});
             opts = p.Results;
 
-            self.slaves(index) = struct('pointer', [], ...
-                            'mode', opts.mode, ...
-                            'channels', opts.channels, ...
-                            'select_channels', opts.select_channels);
+            self.slaves(index).mode = opts.mode;
+            self.slaves(index).channels = opts.channels;
+            self.slaves(index).select_channels = opts.select_channels;
             self.slaves(index).pointer = PsychPortAudio('OpenSlave', self.pointer, ...
                                                          opts.mode, opts.channels, ...
                                                          opts.select_channels);
@@ -67,7 +70,7 @@ classdef PsychAudio < PsychHandle
         end
 
         function Fill(self, sounds, index)
-            if exist(index)
+            if exist('index')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
@@ -76,7 +79,7 @@ classdef PsychAudio < PsychHandle
         end
 
         function time = Play(self, when, index)
-            if exist(index)
+            if exist('index')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
@@ -85,7 +88,7 @@ classdef PsychAudio < PsychHandle
         end
 
         function Stop(self, index)
-            if exist(index)
+            if exist('index')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
@@ -99,12 +102,12 @@ classdef PsychAudio < PsychHandle
         end
 
         function status = Status(self, index)
-            if exist(index)
+            if exist('index')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
             end
             status = PsychPortAudio('GetStatus', x);
         end
-
-end
+    end % end methods
+end % end classdef
