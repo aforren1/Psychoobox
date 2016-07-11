@@ -11,6 +11,7 @@ classdef PsychAudio < PsychHandle
         suggested_latency;
         select_channels;
         slaves;
+        buffers;
     end
 
     methods
@@ -59,8 +60,10 @@ classdef PsychAudio < PsychHandle
             self.slaves(index).pointer = PsychPortAudio('OpenSlave', self.pointer, ...
                                                          opts.mode, opts.channels, ...
                                                          opts.select_channels);
+        end
 
-
+        function CreateBuffer(self, sounds, index)
+            self.buffers(index) = PsychPortAudio('CreateBuffer', [], sounds);
         end
 
         function Fill(self, sounds, index)
@@ -103,5 +106,5 @@ classdef PsychAudio < PsychHandle
             end
             status = PsychPortAudio('GetStatus', x);
         end
-        
+
 end
