@@ -1,5 +1,5 @@
 classdef Line < PsychHandle
-    properties (SetAccess = protected, GetAccess = protected)
+    properties (SetAccess = public, GetAccess = public)
         color;
         from_h;
         from_v;

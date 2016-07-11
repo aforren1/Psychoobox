@@ -3,7 +3,7 @@ classdef PsychWindow < PsychHandle
 % Example:
 % scrn = PsychWindow(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
 %
-    properties (SetAccess = protected, GetAccess = protected)
+    properties (SetAccess = public, GetAccess = public)
         % settings
         pointer;
         on_screen;
@@ -40,6 +40,11 @@ classdef PsychWindow < PsychHandle
                 Screen('Preference', 'SkipSyncTests', 2);
             end
 
+            % assign vals to struct
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
+
             if opts.on_screen
                 [self.pointer, self.rect] = Screen('OpenWindow', pointer,...
                                                    opts.color, opts.rect,...
@@ -54,9 +59,6 @@ classdef PsychWindow < PsychHandle
             end
             self.flip_interval = Screen('GetFlipInterval', self.pointer);
             self.frame_rate = Screen('FrameRate', self.pointer);
-            for fns = fieldnames(opts)'
-                self.(fns{1}) = opts.(fns{1});
-            end
         end
 
         function Set(self, property, value)
@@ -76,8 +78,7 @@ classdef PsychWindow < PsychHandle
         end
 
         function Close(self)
-            sca;
-            %Screen('Close', self.pointer);
+            Screen('Close', self.pointer);
             delete(self);
         end
 

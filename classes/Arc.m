@@ -1,6 +1,6 @@
 classdef Arc < PsychFrames
 
-    properties (SetAccess = protected, GetAccess = protected)
+    properties (SetAccess = public, GetAccess = public)
         start_angle;
         arc_angle;
     end

@@ -1,5 +1,5 @@
 classdef (Abstract) PsychFrames < PsychHandle
-    properties (SetAccess = protected, GetAccess = protected)
+    properties (SetAccess = public, GetAccess = public)
         fill_color; % if empty, frame only
         frame_color; % if empty, fill only
         rect;
