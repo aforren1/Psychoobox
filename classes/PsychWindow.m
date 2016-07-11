@@ -15,9 +15,11 @@ classdef PsychWindow < PsychHandle
         multisample;
         imaging_mode;
         skip_sync_tests;
+        alpha_blending;
         % derived quantities
         flip_interval;
         frame_rate;
+        priority;
     end
 
     methods
@@ -34,6 +36,8 @@ classdef PsychWindow < PsychHandle
             p.addParamValue('multisample', 1, @(x) isempty(x) || (isnumeric(x) && x > 0));
             p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
+            p.addParamValue('alpha_blending', false, @(x) islogical(x));
+
             p.parse(pointer, on_screen, varargin{:});
             opts = p.Results;
             if opts.skip_sync_tests
@@ -59,6 +63,13 @@ classdef PsychWindow < PsychHandle
             end
             self.flip_interval = Screen('GetFlipInterval', self.pointer);
             self.frame_rate = Screen('FrameRate', self.pointer);
+            self.priority = MaxPriority(self.pointer);
+
+            % inflexible at the moment, allow getting/setting
+            if opts.alpha_blending
+                Screen('BlendFunction', self.pointer, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+            end
+
         end
 
         function Set(self, property, value)
