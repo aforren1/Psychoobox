@@ -112,7 +112,7 @@ classdef PsychSerial < PsychHandle
             IOPort('Purge', self.pointer);
         end
 
-        function Close(o)
+        function Close(self)
             IOPort('ConfigureSerialPort', self.pointer, 'StopBackgroundRead');
             IOPort('Close', self.pointer);
             delete(self);
