@@ -27,7 +27,7 @@ classdef PsychText < PsychHandle
             p.addParamValue('font', 'Courier New');
             p.addParamValue('color', 0, @(x) isnumeric(x));
             p.addParamValue('background_color', [], @(x) isnumeric(x));
-            p.addParamValue('transform', zeros(2, 3), @(x) all(size(x) == size(zeros(2,3))));
+            p.addParamValue('transform', eye(2, 3), @(x) all(size(x) == size(zeros(2,3))));
             p.addParamValue('val', '', @(x) ischar(x));
 
             p.addParamValue('x', 0, @(x) isnumeric(x));
