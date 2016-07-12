@@ -12,6 +12,13 @@ txt = PsychText('val', 'testing testing 123',...
 txt.Draw(scrn.pointer);
 
 scrn.Flip;
+KbWait;
 
+txt.Set('formatted', true);
+txt.Set('wrapat', 10);
+txt.Draw(scrn.pointer);
+scrn.Flip;
+
+WaitSecs(.5);
 KbWait;
 scrn.Close;
