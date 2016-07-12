@@ -37,7 +37,7 @@ classdef PsychSerial < PsychHandle
             p.addParamValue('lenient', false, @(x) islogical(x));
             p.addParamValue('port', [], @(x) isempty(x) || ischar(x));
             p.addParamValue('baud_rate', 9600, @(x) isnumeric(x));
-            p.addParamValue('parity', 'None', @(x) ischar(x));
+            p.addParamValue('parity', 'None', @(x) any(not(cellfun('isempty', strfind(x, {'None', 'Even', 'Odd'})))));
 
             p.addParamValue('data_bits', 8, @(x) isnumeric(x));
             p.addParamValue('stop_bits', 1, @(x) isnumeric(x));
@@ -87,7 +87,7 @@ classdef PsychSerial < PsychHandle
                                     opts.blocking_background_read, ...
                                     opts.read_filter_flags, ...
                                     opts.start_background_read);
-            init_settings
+
             self.pointer = IOPort('OpenSerialPort', opts.port, init_settings);
         end % end constructor
 
