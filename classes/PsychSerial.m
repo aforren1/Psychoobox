@@ -26,11 +26,7 @@ classdef PsychSerial < PsychHandle
         read_buffer; % max_line * sampling_freq * time_buffer
         pointer;
 
-         %BaudRate=%i InputBufferSize=%i Terminator=0 ReceiveTimeout=%f ReceiveLatency=0.0001'
-        %asyncSetup = sprintf('%s BlockingBackgroundRead=1 StartBackgroundRead=1', joker);
-%IOPort('ConfigureSerialPort', myport, asyncSetup);
-
-
+        param_names;
     end
 
     methods
@@ -79,27 +75,48 @@ classdef PsychSerial < PsychHandle
                 opts.lenient = [];
             end
 
-            init_settings = sprintf('%s Parity=%i DataBits=%i StopBits=%i FlowControl=%s BaudRate=%i InputBufferSize=%i Terminator=0 ReceiveTimeout=%f ReceiveLatency=%f',...
-                                   opts.lenient, opts.parity, ...
-                                   opts.data_bits, ...
-                                   opts.stop_bits, opts.flow_control,...
-                                   opts.baud_rate, self.read_buffer, ...
-                                   opts.terminator, opts.receive_timeout,...
-                                   opts.receive_latency);
-
-             async_settings = sprintf('BlockingBackgroundRead=%i ReadFilterFlags=%i StartBackgroundRead=%i', ...
-                                      opts.blocking_background_read, ...
-                                      opts.read_filter_flags, ...
-                                      opts. start_background_read);
+            init_settings = sprintf(['%s Parity=%i DataBits=%i StopBits=%i ', ...
+                                     'FlowControl=%s BaudRate=%i InputBufferSize=%i ',...
+                                     'Terminator=%i ReceiveTimeout=%f ReceiveLatency=%f ',...
+                                     'BlockingBackgroundRead=%i ReadFilterFlags=%i ',...
+                                     'StartBackgroundRead=%i'], ...
+                                    opts.lenient, opts.parity, ...
+                                    opts.data_bits, ...
+                                    opts.stop_bits, opts.flow_control,...
+                                    opts.baud_rate, self.read_buffer, ...
+                                    opts.terminator, opts.receive_timeout,...
+                                    opts.receive_latency, ...
+                                    opts.blocking_background_read, ...
+                                    opts.read_filter_flags, ...
+                                    opts.start_background_read);
 
              self.pointer = IOPort('OpenSerialPort', opts.port, init_settings);
+        end % end constructor
 
-             IOPort('ConfigureSerialPort', self.pointer, async_settings);
+        function [data, timestamp] = Read(self, blocking, amount)
+            if ~exist('blocking', 'var')
+                blocking = 0;
+            end
+            if ~exist('amount', 'var')
+                amount = [];
+            end
+            [data, timestamp] = IOPort('Read', self.pointer, blocking, amount);
         end
 
+        function Flush(self)
+            IOPort('Flush', self.port);
+        end
 
+        % flush write and read data
+        function Purge(self)
+            IOPort('Purge', self.pointer);
+        end
 
-    end
+        function Close(o)
+            IOPort('ConfigureSerialPort', self.pointer, 'StopBackgroundRead');
+            IOPort('Close', self.pointer);
+            delete(self);
+        end
 
-
-end
+    end % end methods
+end % end classdef
