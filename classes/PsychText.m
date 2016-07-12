@@ -24,9 +24,9 @@ classdef PsychText < PsychHandle
             p.addParamValue('style', 'normal', ...
             @(x) any(not(cellfun('isempty', strfind(x, {'normal','bold','underline','outline','condense','extend'})))));
 
-            p.addParamValue('font', 'helvetica');
+            p.addParamValue('font', 'Courier New');
             p.addParamValue('color', 0, @(x) isnumeric(x));
-            p.addParamValue('background_color', [0 0 0 0], @(x) isnumeric(x));
+            p.addParamValue('background_color', [], @(x) isnumeric(x));
             p.addParamValue('transform', zeros(2, 3), @(x) all(size(x) == size(zeros(2,3))));
             p.addParamValue('val', '', @(x) ischar(x));
 
@@ -54,12 +54,10 @@ classdef PsychText < PsychHandle
             Screen('TextSize', window_pointer, self.size);
             Screen('TextStyle', window_pointer, self.styles.(self.style));
             Screen('TextFont', window_pointer, self.font);
-            Screen('TextColor', window_pointer, self.color);
-            Screen('TextBackgroundColor', window_pointer, self.background_color);
             Screen('TextTransform', window_pointer, self.transform);
             Screen('DrawText', window_pointer, self.val, ...
-                   self.x, self.y, [], [], self.y_pos_is_baseline, ...
-                   self.swap_text_direction);
+                   self.x, self.y, self.color, self.background_color, ...
+                   self.y_pos_is_baseline, self.swap_text_direction);
         end
     end
 end
