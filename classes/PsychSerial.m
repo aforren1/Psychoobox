@@ -101,7 +101,15 @@ classdef PsychSerial < PsychHandle
             IOPort('ConfigureSerialPort', self.pointer, [self.param_names{idx}, '=', value]);
         end
 
-        function [data, timestamp] = Read(self, blocking, amount)
+        function value = Get(self, property)
+            if strcmpi(property, 'BytesAvailable')
+                value = IOPort('BytesAvailable', self.pointer);
+            else
+                value = Get@PsychHandle(self, property);
+            end
+        end
+
+        function [data, timestamp] = Read(self, amount, blocking)
             if ~exist('blocking', 'var')
                 blocking = 0;
             end
@@ -109,6 +117,15 @@ classdef PsychSerial < PsychHandle
                 amount = [];
             end
             [data, timestamp] = IOPort('Read', self.pointer, blocking, amount);
+        end
+
+        function [num_written, timestamp, error_msg,...
+                  pre_time, post_time, last_check_time] = Write(self, data, blocking);
+            if ~exist('blocking', 'var')
+              blocking = 0;
+            end
+            [num_written, timestamp, error_msg,...
+             pre_time, post_time, last_check_time] = IOPort('Write', self.pointer, data, blocking);
         end
 
         function Flush(self)
