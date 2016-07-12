@@ -23,7 +23,7 @@ classdef PsychSerial < PsychHandle
 
         max_line; % in bytes
         time_buffer; % in seconds
-        read_buffer; % max_line * sampling_freq * time_buffer
+        input_buffer_size; % max_line * sampling_freq * time_buffer
         pointer;
 
         param_names;
@@ -58,13 +58,6 @@ classdef PsychSerial < PsychHandle
             p.addParamValue('time_buffer', 120, @(x) isnumeric(x));
             p.parse(varargin{:});
             opts = p.Results;
-            for fns = fieldnames(opts)'
-                self.(fns{1}) = opts.(fns{1});
-            end
-
-            % two minutes' worth of data
-            self.read_buffer = ceil(opts.max_line * opts.sampling_freq * opts.time_buffer);
-
             if isempty(opts.port)
                 opts.port = FindSerialPort([], 1);
             end
@@ -75,6 +68,13 @@ classdef PsychSerial < PsychHandle
                 opts.lenient = [];
             end
 
+            for fns = fieldnames(opts)'
+                self.(fns{1}) = opts.(fns{1});
+            end
+            param_names = fieldnames(opts);
+            % two minutes' worth of data
+            self.input_buffer_size = ceil(opts.max_line * opts.sampling_freq * opts.time_buffer);
+
             init_settings = sprintf(['%s Parity=%i DataBits=%i StopBits=%i ', ...
                                      'FlowControl=%s BaudRate=%i InputBufferSize=%i ',...
                                      'Terminator=%i ReceiveTimeout=%f ReceiveLatency=%f ',...
@@ -83,15 +83,23 @@ classdef PsychSerial < PsychHandle
                                     opts.lenient, opts.parity, ...
                                     opts.data_bits, ...
                                     opts.stop_bits, opts.flow_control,...
-                                    opts.baud_rate, self.read_buffer, ...
+                                    opts.baud_rate, self.input_buffer_size, ...
                                     opts.terminator, opts.receive_timeout,...
                                     opts.receive_latency, ...
                                     opts.blocking_background_read, ...
                                     opts.read_filter_flags, ...
                                     opts.start_background_read);
 
-             self.pointer = IOPort('OpenSerialPort', opts.port, init_settings);
+            self.pointer = IOPort('OpenSerialPort', opts.port, init_settings);
         end % end constructor
+
+        function Set(self, property, value)
+            % find the index of the property
+            Set@PsychHandle(self, property, value);
+            property = strrep(property, '_', '');
+            idx = find(not(cellfun('isempty', (strfind(property, tolower(self.param_names))))));
+            IOPort('ConfigureSerialPort', self.pointer, [self.param_names{idx}, '=', value]);
+        end
 
         function [data, timestamp] = Read(self, blocking, amount)
             if ~exist('blocking', 'var')
@@ -104,7 +112,7 @@ classdef PsychSerial < PsychHandle
         end
 
         function Flush(self)
-            IOPort('Flush', self.port);
+            IOPort('Flush', self.pointer);
         end
 
         % flush write and read data
