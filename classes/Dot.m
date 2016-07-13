@@ -47,7 +47,7 @@ classdef Dot < PsychHandle
             opts = p.Results;
 
             % try to catch incorrectly-sized matrices
-            if size(opts.xy, 1) == 2
+            if size(opts.xy, 2) == 2
                 opts.xy = opts.xy';
             end
 

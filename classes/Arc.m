@@ -1,5 +1,18 @@
 classdef Arc < PsychFrames
-
+% Arc Draw one arc with or without antialiasing.
+%
+% Arc Properties:
+%        fill_color - Fill shape with this color (3x1 or 4x1). Defaults to [].
+%        frame_color - Fill frame with this color (3x1 or 4x1). Defaults to [].
+%        rect - 4x1 rectangle in which the shape is inscribed. Defaults to [].
+%        pen_width - Width of the frame, if it exists. Defaults to 1.
+%        type - Internally used to signal if fill and/or frame drawers are called.
+%        start_angle - Initial angle of the arc.
+%        arc_angle - Angle of arc.
+%
+% Arc Methods:
+%        Draw - Draw the arc to the specified window.
+%
     properties (SetAccess = public, GetAccess = public)
         start_angle;
         arc_angle;
@@ -35,6 +48,8 @@ classdef Arc < PsychFrames
         end % end constructor
 
         function Draw(self, pointer)
+            % Draw(window_pointer) Draw to the specified window.
+
             if strcmpi(self.type, 'FillArc') || strcmpi(self.type, 'FillFrame')
                 Screen('FillArc', pointer, self.fill_color, self.rect, ...
                        self.start_angle, self.arc_angle);

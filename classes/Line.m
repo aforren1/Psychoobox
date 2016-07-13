@@ -2,8 +2,8 @@ classdef Line < PsychHandle
 % Line Draw one or multiple lines with or without antialiasing.
 %
 % Line Properties:
-%    start_xy - Nx2 matrix of (x, y) pairings.
-%    stop_xy - Nx2 matrix of (x, y) pairings. Must be the same dimensions as start_xy.
+%    start_xy - 2xN matrix of (x, y) pairings.
+%    stop_xy - 2xN matrix of (x, y) pairings. Must be the same dimensions as start_xy.
 %    color - A 3xN or 4xN matrix containing color info ([r g b] or [r g b alpha], if alpha blending is on).
 %    pen_width - Width of the line. Default is 1.
 %    smooth - 0 is no smoothing, 1 is smoothing with antialiasing, 2 is higher-quality antialiasing. Defaults to 0.
@@ -18,8 +18,8 @@ classdef Line < PsychHandle
 %
 % Example:
 % lne = Line('color', [125 0 233], ...
-%            'start_xy', [25 25], ...
-%            'stop_xy', [75 120], ...
+%            'start_xy', [25 25]', ...
+%            'stop_xy', [75 120]', ...
 %            'pen_width', 2);
 % lne.Draw(scrn.pointer);
 %
@@ -49,12 +49,21 @@ classdef Line < PsychHandle
             p.parse(varargin{:});
             opts = p.Results;
 
+            % try to catch incorrectly-sized matrices
+            if size(opts.start_xy, 1) == 2
+                opts.start_xy = opts.start_xy';
+            end
+            if size(opts.stop_xy, 1) == 2
+                opts.stop_xy = opts.stop_xy';
+            end
+
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
         end
 
         function Draw(self, pointer)
+            % Draw(window_pointer) Draw to the specified window.
             if self.smooth > 0 || sum(size(self.start_xy)) > 3
                 tempdims = zeros(length(self.start_xy) + length(self.stop_xy), 2);
                 tempdims(1:2:end, :) = self.start_xy;

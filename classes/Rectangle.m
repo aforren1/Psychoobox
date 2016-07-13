@@ -1,4 +1,16 @@
 classdef Rectangle < PsychFrames
+% Rectangle Draw one or more rectangles.
+%
+% Rectangle Properties:
+%        fill_color - Fill shape with this color (3xN or 4xN). Defaults to [].
+%        frame_color - Fill frame with this color (3xN or 4xN). Defaults to [].
+%        rect - 4xN rectangle in which the shape is inscribed. Defaults to [].
+%        pen_width - Width of the frame, if it exists. Defaults to 1.
+%        type - Internally used to signal if fill and/or frame drawers are called.
+%
+% Rectangle Methods:
+%        Draw - Draw the rectangle to the specified window.
+%
     methods
         function self = Rectangle(varargin)
             self = self@PsychFrames;
@@ -24,6 +36,8 @@ classdef Rectangle < PsychFrames
         end % end constructor
 
         function Draw(self, pointer)
+            % Draw(window_pointer) Draw to the specified window.
+
             if strcmpi(self.type, 'FillRect') || strcmpi(self.type, 'FillFrame')
                 Screen('FillRect', pointer, self.fill_color, self.rect);
             end

@@ -1,5 +1,17 @@
 classdef Poly < PsychFrames
-
+% Poly Draw one polygon.
+%
+% Poly Properties:
+%        fill_color - Fill shape with this color (3x1 or 4x1). Defaults to [].
+%        frame_color - Fill frame with this color (3x1 or 4x1). Defaults to [].
+%        pen_width - Width of the frame, if it exists. Defaults to 1.
+%        type - Internally used to signal if fill and/or frame drawers are called.
+%        is_convex - If the shape is known to be convex, set to 1 for better performance. Defaults to 0.
+%        point_list - Nx2 matrix of (x, y) pairings.
+%
+% Poly Methods:
+%        Draw - Draw the polygon to the specified window.
+%
     properties (SetAccess = public, GetAccess = public)
         is_convex;
         point_list;
@@ -9,12 +21,12 @@ classdef Poly < PsychFrames
         function self = Poly(varargin)
             self = self@PsychFrames;
             self.p.FunctionName = 'Poly';
-            self.p.addParamValue('is_convex', true, @(x) islogical(x));
+            self.p.addParamValue('is_convex', 0, @(x) any(x == 0:1));
             self.p.addParamValue('point_list', [], @(x) isempty(x) || isnumeric(x))
             self.p.parse(varargin{:});
             opts = self.p.Results;
             self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
-                                    
+
             % shuffle options into the obj
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
@@ -35,6 +47,8 @@ classdef Poly < PsychFrames
         end % end constructor
 
         function Draw(self, pointer)
+            % Draw(window_pointer) Draw to the specified window.
+
             if strcmpi(self.type, 'FillPoly') || strcmpi(self.type, 'FillFrame')
                 Screen('FillPoly', pointer, self.fill_color, ...
                        self.point_list, self.is_convex);
@@ -47,7 +61,3 @@ classdef Poly < PsychFrames
         end % end Draw
     end % end methods
 end % end classdef
-
-
-Screen('FramePoly', windowPtr [,color], pointList [,penWidth]);
-Screen('FillPoly', windowPtr [,color], pointList [, isConvex]);

@@ -1,5 +1,16 @@
 classdef Oval < PsychFrames
-
+% Oval Draw one or more ovals.
+%
+% Oval Properties:
+%        fill_color - Fill shape with this color (3xN or 4xN). Defaults to [].
+%        frame_color - Fill frame with this color (3xN or 4xN). Defaults to [].
+%        rect - 4xN rectangle in which the shape is inscribed. Defaults to [].
+%        pen_width - Width of the frame, if it exists. Defaults to 1.
+%        type - Internally used to signal if fill and/or frame drawers are called.
+%
+% Oval Methods:
+%        Draw - Draw the oval(s) to the specified window.
+%
     methods
         function self = Oval(varargin)
             self = self@PsychFrames;
@@ -27,6 +38,8 @@ classdef Oval < PsychFrames
         end
 
         function Draw(self, pointer)
+            % Draw(window_pointer) Draw to the specified window.
+
             if strcmpi(self.type, 'FillOval') || strcmpi(self.type, 'FillFrame')
                 Screen('FillOval', pointer, self.fill_color, self.rect);
             end

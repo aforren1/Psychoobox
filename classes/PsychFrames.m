@@ -23,8 +23,8 @@ classdef (Abstract) PsychFrames < PsychHandle
         end
 
         function Draw(self, pointer)
-        % Draw(window_pointer) Draw to the specified window
-        % 
+        % Draw(window_pointer) Draw to the specified window.
+        %
         end
     end
 end
