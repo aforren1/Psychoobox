@@ -17,5 +17,6 @@ classdef (Abstract) PsychFrames < PsychHandle
             self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
         end
         function Draw(self, pointer) end;
+        % Draw(window_pointer) Draw to the specified window.
     end
 end

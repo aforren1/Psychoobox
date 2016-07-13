@@ -1,5 +1,18 @@
 classdef PsychSerial < PsychHandle
-
+% PsychSerial Communicate with real and imaginary serial devices.
+%
+% Interface to IOPort.
+%
+% PsychSerial Properties:
+%    port - String representing serial port, eg. '/dev/ttyS0' or 'COM3'. If empty, will make an educated guess on desired port.
+%    baud_rate - Specifies how quickly data is sent. Defaults to 9600.
+%    parity - None, Even, or Odd.
+%    lenient - true/false (good for setting up)
+%
+%    data_bits -
+%    stop_bits -
+%    flow_control;
+%    terminator;
     properties (SetAccess = public, GetAccess = public)
         lenient; % true/false
         port; % /dev/ttyACM0

@@ -1,4 +1,25 @@
 classdef Dot < PsychHandle
+% Dot Draw fast dots (uses DrawDots under the hood)
+%
+% Draw dots with this dot drawer.
+%
+% Dot Properties:
+%     pointer - Handle for the Dot object.
+%     xy - A Nx2 matrix containing (x,y) pairs for each dot.
+%     size - A scalar or vector the same length as xy. Defaults to 1.
+%     color - A 3xN or 4xN matrix containing color info ([r g b] or [r g b alpha], if alpha blending is on).
+%     center - The 1x2 vector specifying the point that xy coordinates are relative to (defaults to [0 0]).
+%     dot_type - 0 and 4 are square dots (4 is a faster version), and 1 - 3 are circular dots (works only if alpha blending is on).
+%     lenient - Tells Screen to not check dot sizes.
+% Dot Methods:
+%     Draw - Draw the dots on the specified window.
+%
+% Example:
+%
+% dot_obj = Dot('xy', [0:5:20; 5:10:45], ...
+%               'dot_type', 3, ...
+%               'size', [4 15 3 1]);
+% dot_obj.Draw(screen_pointer);
 
     properties (SetAccess = public, GetAccess = public)
         pointer;
@@ -26,14 +47,14 @@ classdef Dot < PsychHandle
             if size(opts.xy, 2) == 2
                 opts.xy = opts.xy';
             end
-            
+
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
         end
 
         function Draw(self, pointer)
-            % use DrawDots in all situations
+            % Draw(window_pointer) Draw dots to the specified window.
             Screen('DrawDots', pointer, self.xy, self.size, self.color,...
                    self.center, self.dot_type, self.lenient);
         end
