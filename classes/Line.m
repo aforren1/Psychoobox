@@ -1,11 +1,34 @@
 classdef Line < PsychHandle
+% Line Draw one or multiple lines with or without antialiasing.
+%
+% Line Properties:
+%    start_xy - Nx2 matrix of (x, y) pairings.
+%    stop_xy - Nx2 matrix of (x, y) pairings. Must be the same dimensions as start_xy.
+%    color - A 3xN or 4xN matrix containing color info ([r g b] or [r g b alpha], if alpha blending is on).
+%    pen_width - Width of the line. Default is 1.
+%    smooth - 0 is no smoothing, 1 is smoothing with antialiasing, 2 is higher-quality antialiasing. Defaults to 0.
+%    lenient - If 1, width of lines isn't checked for validity. Defaults to 0.
+%    center - Define a new center that coordinates are relative to. Defaults to [0, 0].
+%
+% Line Methods:
+%     Draw - Draw the line(s) on the specified window.
+%     Get - Get values.
+%     Set - Set values.
+%     Print - See values.
+%
+% Example:
+% lne = Line('color', [125 0 233], ...
+%            'start_xy', [25 25], ...
+%            'stop_xy', [75 120], ...
+%            'pen_width', 2);
+% lne.Draw(scrn.pointer);
+%
     properties (SetAccess = public, GetAccess = public)
         color;
         start_xy;
         stop_xy;
         pen_width;
         smooth;
-
         lenient;
         center;
     end

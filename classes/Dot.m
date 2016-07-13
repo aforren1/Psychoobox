@@ -57,7 +57,6 @@ classdef Dot < PsychHandle
         end
 
         function Draw(self, pointer)
-            % Draw(window_pointer) Draw dots to the specified window.
             Screen('DrawDots', pointer, self.xy, self.size, self.color,...
                    self.center, self.dot_type, self.lenient);
         end
