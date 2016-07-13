@@ -6,13 +6,24 @@ classdef PsychSerial < PsychHandle
 % PsychSerial Properties:
 %    port - String representing serial port, eg. '/dev/ttyS0' or 'COM3'. If empty, will make an educated guess on desired port.
 %    baud_rate - Specifies how quickly data is sent. Defaults to 9600.
-%    parity - None, Even, or Odd.
-%    lenient - true/false (good for setting up)
+%    terminator - ASCII representation of the end-of-line. Defaults to 10 (newline).
 %
-%    data_bits -
-%    stop_bits -
-%    flow_control;
-%    terminator;
+%    The following are used to determine the input buffer size:
+%    max_line - Maximum expected bytes per line.
+%    time_buffer - Duration of buffer. Defaults to 120 seconds.
+%    sampling_freq - Expected sampling rate. Defaults to 120 Hz.
+%
+%    parity - None, Even, or Odd. Defaults to None.
+%    lenient - Keep going despite some errors (true/false). Defaults to false.
+%    data_bits - Number of data bits per character (5 - 8). Defaults to 8.
+%    stop_bits - Signals end of a character (1 - 2). Defaults to 1.
+%
+%    flow_control - Defaults to None.
+%    send_timeout - (Windows only) Inter-byte send timeout (seconds). Defaults to 1.
+%    receive_timeout - Inter-byte receive timeout (seconds). Defaults to 1.
+%    receive_latency - (Some OSX, Linux) Latency for processing new bytes (seconds). Defaults to 0.0001.
+%
+%
     properties (SetAccess = public, GetAccess = public)
         lenient; % true/false
         port; % /dev/ttyACM0
@@ -58,7 +69,7 @@ classdef PsychSerial < PsychHandle
             p.addParamValue('terminator', 10, @(x) isnumeric(x));
 
             p.addParamValue('send_timeout', 1, @(x) isnumeric(x));
-            p.addParamValue('receive_timeout', 0.1, @(x) isnumeric(x));
+            p.addParamValue('receive_timeout', 1, @(x) isnumeric(x));
 
             p.addParamValue('start_background_read', 1, @(x) isnumeric(x));
             p.addParamValue('blocking_background_read', 0, @(x) any(x == [0 1]));
