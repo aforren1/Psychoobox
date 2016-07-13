@@ -1,4 +1,44 @@
 classdef PsychAudio < PsychHandle
+% PsychAudio Play sounds through PsychPortAudio
+%
+% PsychAudio Properties:
+%    device_id - ID for audio device. Defaults to [].
+%    pointer - Handle for PsychAudio object.
+%    mode - See `PsychPortAudio Open?` for details. Defaults to 1.
+%    req_latency_class - Allows PsychPortAudio to be more aggressive with regards to latency (0 - 4). Defaults to 1.
+%    freq - Requested capture/playback rate. Defaults to 44100 Hz.
+%    channels - Number of channels to use. Can specify [#output, #input]. Defaults to 2, or two output channels.
+%    buffer_size - Size and number of audio buffers. Defaults to [].
+%    suggested_latency - Requested latency in seconds. Defaults to [].
+%    select_channels - Map channels to device channels. Defaults to [].
+%
+% PsychAudio Methods:
+%    AddSlave - Add slaves to master of mode > 8.
+%    CreateBuffer - Make an audio buffer (not yet attached to a device).
+%    FillBuffer - Fill the buffer of an audio device.
+%    DeleteBuffer - Delete audio buffer.
+%    Play - Play sound.
+%    Stop - Stop sound.
+%    Status - Return device status.
+%    Close - Close master device.
+%
+% Example:
+%
+% aud = PsychAudio('mode', 9); % Master, playback only
+% aud.AddSlave(1);
+% aud.AddSlave(2);
+%
+% % Create a buffer at index 1, and then fill slave 1 with that buffer
+% aud.CreateBuffer(mysound, 1);
+% aud.FillBuffer(1, 1);
+%
+% % Directly fill buffer of slave 2
+% aud.FillBuffer(mysound, 2);
+%
+% t1 = GetSecs + 2;
+% tout = aud.Play(t1, 2); % Play sound 2 at time t1
+%
+% aud.Close;
 
     properties (SetAccess = public, GetAccess = public)
         device_id;
@@ -49,6 +89,15 @@ classdef PsychAudio < PsychHandle
         end
 
         function AddSlave(self, index, varargin)
+        % AddSlave(index, varargin) Add a slave to a master audio device.
+        % Optional named arguments:
+        %    mode - See `PsychPortAudio OpenSlave?` for options. Defaults to 1 (playback only).
+        %    channels - Number of channels to use. Defaults to 2.
+        %    select_channels - Map channels to device channels. Defaults to [].
+        %
+            if self.mode < 9
+                error('Master needs to be started in mode 9, 10, or 11.');
+            end
             p = inputParser;
             p.FunctionName = 'AddSlave';
             p.addParamValue('mode', 1, @(x) any(x == [1, 2, 3, 7, 32, 64]));
@@ -66,20 +115,44 @@ classdef PsychAudio < PsychHandle
         end
 
         function CreateBuffer(self, sounds, index)
+        % CreateBuffer(sounds, index) Make a buffer and add a sound to it.
             self.buffers(index) = PsychPortAudio('CreateBuffer', [], sounds);
         end
 
-        function Fill(self, sounds, index)
+        function result = DeleteBuffer(self, index, wait)
+        % result = DeleteBuffer(index, wait) Delete a buffer.
+        % If `wait` is unspecified, defaults to 1 (wait until buffer is not in use).
+            if exist('wait', 'var')
+                wait = 1;
+            end
+            result = PsychPortAudio('DeleteBuffer', self.buffers(index), wait);
+        end
+
+        function FillBuffer(self, sounds_or_index, index)
+        % FillBuffer(sound_or_index, index) Fill buffer of a particular audio device.
+        % If sounds_or_index is small, treat it as the index to a particular buffer.
+        % If index doesn't exist, assume there is only a master, and fill that.
             if exist('index')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
             end
-            PsychPortAudio('FillBuffer', x, sounds);
+
+            % check if using buffer, rather than matrix
+            if sum(size(sounds_or_index)) < 10
+                sounds_or_index = self.buffers(sounds_or_index);
+            end
+            PsychPortAudio('FillBuffer', x, sounds_or_index);
         end
 
         function time = Play(self, when, index)
-            if exist('index')
+        % time_start = Play(when, index) Plays a sound.
+        % If `when` is unspecified, plays immediately.
+        % If `index` is unspecified, play the master.
+            if ~exist('when', 'var')
+                when = 0;
+            end
+            if exist('index', 'var')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
@@ -88,7 +161,9 @@ classdef PsychAudio < PsychHandle
         end
 
         function Stop(self, index)
-            if exist('index')
+        % Stop(index) Stops a sound.
+        % If `index` is unspecified, stop the master.
+            if exist('index', 'var')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
@@ -97,12 +172,16 @@ classdef PsychAudio < PsychHandle
         end
 
         function Close(self)
+        % Close Closes the master device.
             PsychPortAudio('Close');
             delete(self);
         end
 
         function status = Status(self, index)
-            if exist('index')
+        % status = Status(index) Returns the current status of the master or a slave.
+        % If `index` is unspecified, return the status of the master.
+
+            if exist('index', 'var')
                 x = self.slaves(index).pointer;
             else
                 x = self.master.pointer;
