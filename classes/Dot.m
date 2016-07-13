@@ -21,11 +21,15 @@ classdef Dot < PsychHandle
             p.addParamValue('lenient', 0, @(x) any(x == 0:1));
             p.parse(varargin{:});
             opts = p.Results;
+
+            % try to catch incorrectly-sized matrices
+            if size(opts.xy, 2) == 2
+                opts.xy = opts.xy';
+            end
+            
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
-
-
         end
 
         function Draw(self, pointer)
