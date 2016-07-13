@@ -8,13 +8,13 @@ classdef PsychSerial < PsychHandle
 %    baud_rate - Specifies how quickly data is sent. Defaults to 9600.
 %    terminator - ASCII representation of the end-of-line. Defaults to 10 (newline).
 %
-%    The following are used to determine the input buffer size:
+%    The following three args are used to determine the input buffer size:
 %    max_line - Maximum expected bytes per line.
 %    time_buffer - Duration of buffer. Defaults to 120 seconds.
 %    sampling_freq - Expected sampling rate. Defaults to 120 Hz.
 %
-%    parity - None, Even, or Odd. Defaults to None.
 %    lenient - Keep going despite some errors (true/false). Defaults to false.
+%    parity - None, Even, or Odd. Defaults to None.
 %    data_bits - Number of data bits per character (5 - 8). Defaults to 8.
 %    stop_bits - Signals end of a character (1 - 2). Defaults to 1.
 %
@@ -23,31 +23,44 @@ classdef PsychSerial < PsychHandle
 %    receive_timeout - Inter-byte receive timeout (seconds). Defaults to 1.
 %    receive_latency - (Some OSX, Linux) Latency for processing new bytes (seconds). Defaults to 0.0001.
 %
+%    poll_latency - Latency between polls (seconds). Defaults to 0.0005.
+%    start_background_read - Asynchronous read (in bytes). Defaults to 1.
+%    blocking_background_read - Blocking background reads (1) vs. polling reads (0). Defaults to 1.
+%    read_filter_flags - See `IOSerial OpenSerialPort?`. Defaults to 0.
+%
+% Example:
+%
+% srl = IOPort('lenient', true, ...
+%              'port', '/dev/ttyACM0', ...
+%              'baud_rate', 9600, ...
+%              'sampling_freq', 200,...
+%              'max_line', 16,...
+%              'time_buffer', 20);
 %
     properties (SetAccess = public, GetAccess = public)
-        lenient; % true/false
-        port; % /dev/ttyACM0
-        baud_rate; % 9600
-        parity; % None
+        lenient;
+        port;
+        baud_rate;
+        parity;
 
-        data_bits; % 8
-        stop_bits; % 1
-        flow_control; % None
-        terminator; % 10
+        data_bits;
+        stop_bits;
+        flow_control;
+        terminator;
 
-        send_timeout; % 1
-        receive_timeout; % 0.1
-        receive_latency; % 0.0001
-        poll_latency; % 0.0005
+        send_timeout;
+        receive_timeout;
+        receive_latency;
+        poll_latency;
 
-        start_background_read; % 1
-        blocking_background_read; % 1
-        read_filter_flags; % 4
-        sampling_freq; % 120??
+        start_background_read;
+        blocking_background_read;
+        read_filter_flags;
+        sampling_freq;
 
-        max_line; % in bytes
-        time_buffer; % in seconds
-        input_buffer_size; % max_line * sampling_freq * time_buffer
+        max_line;
+        time_buffer;
+        input_buffer_size;
         pointer;
 
         param_names;
