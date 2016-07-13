@@ -28,6 +28,16 @@ classdef PsychSerial < PsychHandle
 %    blocking_background_read - Blocking background reads (1) vs. polling reads (0). Defaults to 1.
 %    read_filter_flags - See `IOSerial OpenSerialPort?`. Defaults to 0.
 %
+% PsychSerial Methods:
+%
+%     Set - Change settings.
+%     Get - Get current setting value.
+%     Read - Blocking and non-blocking reads.
+%     Write - Blocking and non-blocking writes.
+%     Flush - Purge data queued for writeout to device.
+%     Purge - Purge data queued for reading and writing.
+%     Close - Close the device and delete the handle.
+%
 % Example:
 %
 % srl = IOPort('lenient', true, ...
@@ -37,6 +47,12 @@ classdef PsychSerial < PsychHandle
 %              'max_line', 16,...
 %              'time_buffer', 20);
 %
+% [data, timestamp] = srl.Read(self.max_line, 1); % blocking read
+%
+% [num_written, timestamp, error_msg,...
+%  pre_time, post_time, last_check_time] = srl.Write('s', 0); % non-blocking write
+%
+% srl.Close; % Stop any background operations and close the device
     properties (SetAccess = public, GetAccess = public)
         lenient;
         port;
