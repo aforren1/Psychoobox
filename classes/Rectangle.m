@@ -8,6 +8,7 @@ classdef Rectangle < PsychFrames
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
+            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
 
             if isempty(opts.fill_color) && isempty(opts.frame_color)
                 error('Need to specify at least one color!');

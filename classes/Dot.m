@@ -5,7 +5,7 @@ classdef Dot < PsychHandle
 %
 % Dot Properties:
 %     pointer - Handle for the Dot object.
-%     xy - A Nx2 matrix containing (x,y) pairs for each dot.
+%     xy - A 2xN matrix containing (x,y) pairs for each dot.
 %     size - A scalar or vector the same length as xy. Defaults to 1.
 %     color - A 3xN or 4xN matrix containing color info ([r g b] or [r g b alpha], if alpha blending is on).
 %     center - The 1x2 vector specifying the point that xy coordinates are relative to (defaults to [0 0]).
@@ -13,13 +13,16 @@ classdef Dot < PsychHandle
 %     lenient - Tells Screen to not check dot sizes.
 % Dot Methods:
 %     Draw - Draw the dots on the specified window.
+%     Get - Get values.
+%     Set - Set values.
+%     Print - See values.
 %
 % Example:
 %
-% dot_obj = Dot('xy', [0:5:20; 5:10:45], ...
+% dot_obj = Dot('xy', [0:5:20; 5:10:45]', ...
 %               'dot_type', 3, ...
 %               'size', [4 15 3 1]);
-% dot_obj.Draw(screen_pointer);
+% dot_obj.Draw(window_pointer);
 
     properties (SetAccess = public, GetAccess = public)
         pointer;
@@ -44,7 +47,7 @@ classdef Dot < PsychHandle
             opts = p.Results;
 
             % try to catch incorrectly-sized matrices
-            if size(opts.xy, 2) == 2
+            if size(opts.xy, 1) == 2
                 opts.xy = opts.xy';
             end
 

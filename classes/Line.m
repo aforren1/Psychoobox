@@ -25,6 +25,7 @@ classdef Line < PsychHandle
 
             p.parse(varargin{:});
             opts = p.Results;
+            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
@@ -33,7 +34,7 @@ classdef Line < PsychHandle
         function Draw(self, pointer)
             if self.smooth > 0 || sum(size(self.start_xy)) > 3
                 tempdims = zeros(length(self.start_xy) + length(self.stop_xy), 2);
-                tempdims(1:2:end, :) = self.start_xy;	
+                tempdims(1:2:end, :) = self.start_xy;
                 tempdims(2:2:end, :) = self.stop_xy;
                 tempdims = tempdims';
                 Screen('DrawLines', pointer, tempdims, self.pen_width, ...

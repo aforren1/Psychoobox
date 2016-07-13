@@ -13,6 +13,7 @@ classdef Arc < PsychFrames
             self.p.addParamValue('arc_angle', 0, @(x) isnumeric(x));
             self.p.parse(varargin{:});
             opts = self.p.Results;
+            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
 
             % shuffle options into the obj
             for fns = fieldnames(opts)'

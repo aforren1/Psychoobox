@@ -30,13 +30,14 @@ classdef PsychSerial < PsychHandle
 %
 % PsychSerial Methods:
 %
-%     Set - Change settings.
-%     Get - Get current setting value.
 %     Read - Blocking and non-blocking reads.
 %     Write - Blocking and non-blocking writes.
 %     Flush - Purge data queued for writeout to device.
 %     Purge - Purge data queued for reading and writing.
 %     Close - Close the device and delete the handle.
+%     Get - Get values.
+%     Set - Set values.
+%     Print - See values.
 %
 % Example:
 %

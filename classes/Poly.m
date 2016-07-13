@@ -13,7 +13,8 @@ classdef Poly < PsychFrames
             self.p.addParamValue('point_list', [], @(x) isempty(x) || isnumeric(x))
             self.p.parse(varargin{:});
             opts = self.p.Results;
-                        
+            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
+                                    
             % shuffle options into the obj
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});

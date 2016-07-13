@@ -12,6 +12,8 @@ classdef (Abstract) PsychHandle < handle
     methods
 
         function Print(self)
+        % Print See all current values of an object.
+        %     Essentially calls `disp(struct(self))` with warnings turned off.
             warning off;
             disp(struct(self));
             warning on;

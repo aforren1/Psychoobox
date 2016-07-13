@@ -6,6 +6,7 @@ classdef Oval < PsychFrames
             self.p.FunctionName = 'Oval';
             self.p.parse(varargin{:});
             opts = self.p.Results;
+            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
 
             % shuffle options into the obj
             for fns = fieldnames(opts)'
@@ -24,7 +25,7 @@ classdef Oval < PsychFrames
                 self.type = 'FillFrame';
             end
         end
-        
+
         function Draw(self, pointer)
             if strcmpi(self.type, 'FillOval') || strcmpi(self.type, 'FillFrame')
                 Screen('FillOval', pointer, self.fill_color, self.rect);
