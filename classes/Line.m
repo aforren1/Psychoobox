@@ -25,7 +25,7 @@ classdef Line < PsychHandle
 
             p.parse(varargin{:});
             opts = p.Results;
-            self.p = []; % Remove parser after use (print method in Octave dumps loads of errors)
+
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
