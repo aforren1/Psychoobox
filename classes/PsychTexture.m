@@ -21,9 +21,7 @@ classdef PsychTexture < PsychHandle
             self.p.addParamValue('special_flags', 0, @(x) any(x == [0 1 2 4 8 32]));
             self.p.addParamValue('float_precision', 0, @(x) isnumeric(x));
             self.p.addParamValue('texture_orientation', 0, @(x) any(x == 0:3));
-            self.p.addParamValue('texture_shader', 0); % not sure what to do...
-
-%Screen('DrawTexture', windowPointer, texturePointer [,sourceRect] [,destinationRect] [,rotationAngle] [, filterMode] [, globalAlpha] [, modulateColor] [, textureShader] [, specialFlags] [, auxParameters]);
+            self.p.addParamValue('texture_shader', 0);
 
             draw_settings = struct('source_rect', [], ...
                                    'rect', ...
@@ -37,14 +35,12 @@ classdef PsychTexture < PsychHandle
 
             self.struct_proto = struct('pointer', [], 'window_index', [], ...
                                           'original_matrix', [], ...
-                                          'draw_angle', 0, ... % optimizeForDrawAngle == rotationAngle
+                                          'optimize_for_draw_angle', 0, ...
                                           'special_flags', 0, ...
                                           'float_precision', 0, ...
                                           'texture_orientation', 0, ...
                                           'texture_shader', 0, ...
                                           'draw_settings', draw_settings);
-        end
-
         end
 
         function AddImage(self, image_matrix, window_index, image_index, varargin)
@@ -58,15 +54,33 @@ classdef PsychTexture < PsychHandle
                 self.struct_array(image_index).(fns{1}) = opts.(fns{1});
             end
 
+            self.struct_array(image_index).pointer = Screen('MakeTexture', opts.window_index, ...
+                                                            opts.image_matrix, opts.optimize_for_draw_angle, ...
+                                                            opts.special_flags, opts.float_precision, ...
+                                                            opts.texture_orientation, opts.texture_shader);
+
 
         end
 
+        function Draw(self, pointer, indices)
 
-        function Draw(self, pointer)
+            Screen('DrawTextures', pointer, [self.struct_array(indices).pointer], ...
+                   [self.struct_array(indices).source_rect], [self.struct_array(indices).rect], ...
+                   [self.struct_array(indices).rotation_angle], [self.struct_array(indices).filter_mode], ...
+                   [self.struct_array(indices).alpha], [self.struct_array(indices).modulate_color], ...
+                   [self.struct_array(indices).texture_shader], [self.struct_array(indices).special_flags], ...
+                   [self.struct_array(indices).aux_parameters]);
+
+        end
+
+        function Set(self, indices, varargin)
+        % Updates (groups of) settings for MakeTexture (overwriting previous entry)
+
+        end
+
+        function DrawSettings(self, indices, varargin)
+        % Updates (groups of) settings for DrawTextures (overwriting previous entry)
+
         end
     end
 end
-
-
-
-    %textureIndex=Screen('MakeTexture', WindowIndex, imageMatrix [, optimizeForDrawAngle=0] [, specialFlags=0] [, floatprecision=0] [, textureOrientation=0] [, textureShader=0]);
