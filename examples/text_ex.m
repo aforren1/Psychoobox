@@ -14,8 +14,7 @@ txt.Draw(scrn.pointer);
 scrn.Flip;
 KbWait;
 
-txt.Set('formatted', true);
-txt.Set('wrapat', 10);
+txt.Set('formatted', true, 'wrapat', 10);
 txt.Draw(scrn.pointer);
 scrn.Flip;
 
