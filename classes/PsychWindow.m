@@ -141,7 +141,7 @@ classdef PsychWindow < PsychHandle
         end
 
         function Wipe(self, color)
-            % win.Wipe([color])
+            % win.Wipe(color)
             %
             % Fill the entire window with a color.
             Screen('FillRect', self.pointer, color, self.rect);
