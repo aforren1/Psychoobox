@@ -1,5 +1,34 @@
 classdef PsychWindow < PsychHandle
+% PsychWindow Manipulate the display.
 %
+% PsychWindow Properties:
+%     on_screen - If true, create on-screen window. Defaults to true.
+%     rect - Requested dimensions of the screen. Defaults to [] (fullscreen).
+%     color - Screen color. Defaults to [] (white).
+%     pixel_size - Defaults to [] (unchanged).
+%     number_buffers - Defaults to 2.
+%
+%     stereo_mode - Defaults to 0 (monoscopic viewing). See `Screen OpenWindow?` for advanced usage.
+%     multisample - If greater than 0, enables hardware anti-aliasing. Defaults to 0.
+%     imaging_mode - See `help PsychImaging`. Default is 0 (off).
+%     skip_sync_tests - If true, skips sync tests. Default is false.
+%     alpha_blending - If true, executes `Screen('BlendFunction', self.pointer, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA')`. Default is false.
+%
+%     flip_interval - The inter-flip interval in seconds.
+%     frame_rate - The frame rate in hertz.
+%     priority - Contains the maximum priority for the window.
+%
+% PsychWindow Methods:
+%     Flip - Flip the window.
+%     ToFront - Bring the window to the front.
+%     Wipe - Draw a rectangle over the entire window.
+%     DrawingFinished - Signal that drawing is finished before the flip.
+%
+%     Close - Close the window.
+%     Set - Set parameters.
+%     Get - Get the value of a parameter.
+%     Print - Show values of all properties.
+
 % Example:
 % scrn = PsychWindow(0, true, 'color', [25 25 25], 'rect', [0 0 50 50]);
 %
@@ -31,10 +60,10 @@ classdef PsychWindow < PsychHandle
             self.p.addRequired('on_screen', @(x) islogical(x));
             self.p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
             self.p.addParamValue('color', [], @(x) isempty(x) || (ismatrix(x)));
-            self.p.addParamValue('pixel_size', 24, @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('pixel_size', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
             self.p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));
-            self.p.addParamValue('multisample', 1, @(x) isempty(x) || (isnumeric(x) && x > 0));
+            self.p.addParamValue('multisample', 0, @(x) isempty(x) || (isnumeric(x) && x > 0));
             self.p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
             self.p.addParamValue('alpha_blending', false, @(x) islogical(x));
@@ -74,7 +103,7 @@ classdef PsychWindow < PsychHandle
         end
 
         function Set(self, varargin)
-            Set@PsychHandle(self,varargin);
+            Set@PsychHandle(self, varargin);
             % switch property
             %     case 'frame_rate'
             %         Screen('FrameRate', self.pointer, 2, value);
@@ -83,6 +112,13 @@ classdef PsychWindow < PsychHandle
         end
 
         function out_time = Flip(self, flip_time)
+        % win.Flip(flip_time)
+        %
+        % Flips the front and back display surfaces at optional time `flip_time`.
+        %
+        % Example:
+        %
+        % flip_time = win.Flip(GetSecs + 2); % Flip two seconds from present
             if nargin < 2
                 flip_time = 0;
             end
@@ -90,19 +126,37 @@ classdef PsychWindow < PsychHandle
         end
 
         function Close(self)
+            % win.Close()
+            %
+            % Closes the window.
             Screen('Close', self.pointer);
             delete(self);
         end
 
         function ToFront(self)
+            % win.ToFront()
+            %
+            % Brings the window to the front.
             Screen('WindowToFront', self.pointer);
         end
 
-        function Wipe(self, color) % or Clear?
+        function Wipe(self, color)
+            % win.Wipe([color])
+            %
+            % Fill the entire window with a color.
             Screen('FillRect', self.pointer, color, self.rect);
         end
 
         function time_elapsed = DrawingFinished(self, dont_clear, sync)
+            % time_elapsed = win.DrawingFinished([dont_clear], [sync])
+            %
+            % Signal that drawing is finished before the next flip.
+            % Arguments:
+            %     dont_clear - Currently unused. Defaults to [].
+            %     sync - Time how long the previous draw cycle took. Defaults to [].
+            %            If set to 1, `time_elapsed` is the amount of time since the
+            %            previous flip.
+            % Both `dont_clear` and `sync` are optional.
             if ~exist('dont_clear')
                 dont_clear = [];
             end
