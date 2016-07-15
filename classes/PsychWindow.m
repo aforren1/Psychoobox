@@ -75,11 +75,11 @@ classdef PsychWindow < PsychHandle
 
         function Set(self, varargin)
             Set@PsychHandle(self,varargin);
-            switch property
-                case 'frame_rate'
-                    Screen('FrameRate', self.pointer, 2, value);
-                otherwise
-            end
+            % switch property
+            %     case 'frame_rate'
+            %         Screen('FrameRate', self.pointer, 2, value);
+            %     otherwise
+            % end
         end
 
         function out_time = Flip(self, flip_time)
