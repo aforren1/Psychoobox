@@ -63,7 +63,7 @@ classdef PsychWindow < PsychHandle
             self.p.addParamValue('pixel_size', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
             self.p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));
-            self.p.addParamValue('multisample', 0, @(x) isempty(x) || (isnumeric(x) && x > 0));
+            self.p.addParamValue('multisample', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
             self.p.addParamValue('alpha_blending', false, @(x) islogical(x));
