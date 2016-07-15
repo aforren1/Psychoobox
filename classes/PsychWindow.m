@@ -45,6 +45,7 @@ classdef PsychWindow < PsychHandle
         imaging_mode;
         skip_sync_tests;
         alpha_blending;
+        verbosity;
         % derived quantities
         flip_interval;
         frame_rate;
@@ -67,12 +68,15 @@ classdef PsychWindow < PsychHandle
             self.p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
             self.p.addParamValue('alpha_blending', false, @(x) islogical(x));
+            self.p.addParamValue('verbosity', 3, @(x) any(x == 0:5));
 
             self.p.parse(pointer, on_screen, varargin{:});
             opts = self.p.Results;
             if opts.skip_sync_tests
                 Screen('Preference', 'SkipSyncTests', 2);
             end
+
+            Screen('Preference', 'Verbosity', opts.verbosity);
 
             % assign vals to struct
             for fns = fieldnames(opts)'
