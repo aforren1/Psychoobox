@@ -81,36 +81,36 @@ classdef PsychSerial < PsychHandle
         pointer;
 
         param_names;
+        p;
     end
 
     methods
         function self = PsychSerial(varargin)
+            self.p = inputParser;
+            self.p.FunctionName = 'PsychSerial';
+            self.p.addParamValue('lenient', false, @(x) islogical(x));
+            self.p.addParamValue('port', [], @(x) isempty(x) || ischar(x));
+            self.p.addParamValue('baud_rate', 9600, @(x) isnumeric(x));
+            self.p.addParamValue('parity', 'None', @(x) any(not(cellfun('isempty', strfind(x, {'None', 'Even', 'Odd'})))));
 
-            p = inputParser;
-            p.FunctionName = 'PsychSerial';
-            p.addParamValue('lenient', false, @(x) islogical(x));
-            p.addParamValue('port', [], @(x) isempty(x) || ischar(x));
-            p.addParamValue('baud_rate', 9600, @(x) isnumeric(x));
-            p.addParamValue('parity', 'None', @(x) any(not(cellfun('isempty', strfind(x, {'None', 'Even', 'Odd'})))));
+            self.p.addParamValue('data_bits', 8, @(x) isnumeric(x));
+            self.p.addParamValue('stop_bits', 1, @(x) isnumeric(x));
+            self.p.addParamValue('flow_control', 'None', @(x) ischar(x));
+            self.p.addParamValue('terminator', 10, @(x) isnumeric(x));
 
-            p.addParamValue('data_bits', 8, @(x) isnumeric(x));
-            p.addParamValue('stop_bits', 1, @(x) isnumeric(x));
-            p.addParamValue('flow_control', 'None', @(x) ischar(x));
-            p.addParamValue('terminator', 10, @(x) isnumeric(x));
+            self.p.addParamValue('send_timeout', 1, @(x) isnumeric(x));
+            self.p.addParamValue('receive_timeout', 1, @(x) isnumeric(x));
 
-            p.addParamValue('send_timeout', 1, @(x) isnumeric(x));
-            p.addParamValue('receive_timeout', 1, @(x) isnumeric(x));
-
-            p.addParamValue('start_background_read', 1, @(x) isnumeric(x));
-            p.addParamValue('blocking_background_read', 0, @(x) any(x == [0 1]));
-            p.addParamValue('read_filter_flags', 0, @(x) any(x == [0 1 2 4]));
-            p.addParamValue('sampling_freq', 120, @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('start_background_read', 1, @(x) isnumeric(x));
+            self.p.addParamValue('blocking_background_read', 0, @(x) any(x == [0 1]));
+            self.p.addParamValue('read_filter_flags', 0, @(x) any(x == [0 1 2 4]));
+            self.p.addParamValue('sampling_freq', 120, @(x) isempty(x) || isnumeric(x));
 
             % guess at how many bytes per line, max
-            p.addParamValue('max_line', 16, @(x) isnumeric(x));
-            p.addParamValue('time_buffer', 120, @(x) isnumeric(x));
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p.addParamValue('max_line', 16, @(x) isnumeric(x));
+            self.p.addParamValue('time_buffer', 120, @(x) isnumeric(x));
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
             if isempty(opts.port)
                 opts.port = FindSerialPort([], 1);
             end
@@ -145,12 +145,15 @@ classdef PsychSerial < PsychHandle
             self.pointer = IOPort('OpenSerialPort', opts.port, init_settings);
         end % end constructor
 
-        function Set(self, property, value)
+        function Set(self, varargin)
             % find the index of the property
-            Set@PsychHandle(self, property, value);
-            property = strrep(property, '_', '');
-            idx = find(not(cellfun('isempty', (strfind(property, tolower(self.param_names))))));
-            IOPort('ConfigureSerialPort', self.pointer, [self.param_names{idx}, '=', value]);
+            Set@PsychHandle(self, varargin);
+            opts = self.p.Results;
+            for fns = fieldnames(opts)'
+                property_name = strrep(fns{1}, '_', '');
+                idx = find(not(cellfun('isempty', (strfind(property_name, tolower(self.param_names))))));
+                IOPort('ConfigureSerialPort', self.pointer, [self.param_names{idx}, '=', opts.(fns{1})]);
+            end
         end
 
         function value = Get(self, property)

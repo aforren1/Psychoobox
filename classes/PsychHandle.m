@@ -8,7 +8,6 @@ classdef (Abstract) PsychHandle < handle
 %    Get - Get value of a field.
 %    Set - Set value of a field.
 %    Close - Delete handle.
-
     methods
 
         function Print(self)
@@ -27,12 +26,16 @@ classdef (Abstract) PsychHandle < handle
             value = self.(property);
         end
 
-        function Set(self, property, value)
+        function Set(self, varargin)
         % Set(property, value) Set the value of a property
         %    Sets a field "property" to the value "value".
         %
         %    See also GET.
-            self.(property) = value;
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
+             for fns = fieldnames(opts)'
+                 self.(fns{1}) = opts.(fns{1});
+             end
         end
 
         function Close(self)

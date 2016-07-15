@@ -4,7 +4,6 @@ classdef Dot < PsychHandle
 % Draw dots with this dot drawer.
 %
 % Dot Properties:
-%     pointer - Handle for the Dot object.
 %     xy - A 2xN matrix containing (x,y) pairs for each dot.
 %     size - A scalar or vector the same length as xy. Defaults to 1.
 %     color - A 3xN or 4xN matrix containing color info ([r g b] or [r g b alpha], if alpha blending is on).
@@ -25,26 +24,27 @@ classdef Dot < PsychHandle
 % dot_obj.Draw(window_pointer);
 
     properties (SetAccess = public, GetAccess = public)
-        pointer;
         xy;
         size;
         color;
         center;
         dot_type;
         lenient;
+        p;
     end
 
     methods
         function self = Dot(varargin)
-            p = inputParser;
-            p.addParamValue('xy', [], @(x) isempty(x) || (isnumeric(x) && any(size(x) == 2)));
-            p.addParamValue('size', 1, @(x) x > 0);
-            p.addParamValue('color', [0 0 0], @(x) isnumeric(x));
-            p.addParamValue('center', [0 0], @(x) isnumeric(x));
-            p.addParamValue('dot_type', 0, @(x) any(x == 0:4));
-            p.addParamValue('lenient', 0, @(x) any(x == 0:1));
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p = inputParser;
+            self.p.FunctionName = 'Dot';
+            self.p.addParamValue('xy', [], @(x) isempty(x) || (isnumeric(x) && any(size(x) == 2)));
+            self.p.addParamValue('size', 1, @(x) x > 0);
+            self.p.addParamValue('color', [0 0 0], @(x) isnumeric(x));
+            self.p.addParamValue('center', [0 0], @(x) isnumeric(x));
+            self.p.addParamValue('dot_type', 0, @(x) any(x == 0:4));
+            self.p.addParamValue('lenient', 0, @(x) any(x == 0:1));
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
 
             % try to catch incorrectly-sized matrices
             if size(opts.xy, 2) == 2

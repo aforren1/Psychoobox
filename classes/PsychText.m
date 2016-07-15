@@ -46,37 +46,38 @@ classdef PsychText < PsychHandle
         flipv;
         vert_spacing;
         right_to_left;
+        p;
     end
 
     methods
         function self = PsychText(varargin)
-            p = inputParser;
-            p.FunctionName = 'PsychText';
-            p.addParamValue('size', 10, @(x) isnumeric(x) && x > 0);
-            p.addParamValue('style', 'normal', ...
+            self.p = inputParser;
+            self.p.FunctionName = 'PsychText';
+            self.p.addParamValue('size', 10, @(x) isnumeric(x) && x > 0);
+            self.p.addParamValue('style', 'normal', ...
             @(x) any(not(cellfun('isempty', strfind(x, {'normal','bold','underline','outline','condense','extend'})))));
 
-            p.addParamValue('font', 'Courier New');
-            p.addParamValue('color', 0, @(x) isnumeric(x));
-            p.addParamValue('background_color', [], @(x) isnumeric(x));
-            p.addParamValue('transform', eye(2, 3), @(x) all(size(x) == size(zeros(2,3))));
-            p.addParamValue('val', '', @(x) ischar(x));
+            self.p.addParamValue('font', 'Courier New');
+            self.p.addParamValue('color', 0, @(x) isnumeric(x));
+            self.p.addParamValue('background_color', [], @(x) isnumeric(x));
+            self.p.addParamValue('transform', eye(2, 3), @(x) all(size(x) == size(zeros(2,3))));
+            self.p.addParamValue('val', '', @(x) ischar(x));
 
-            p.addParamValue('x', 0, @(x) isnumeric(x) || strcmpi(x, 'center'));
-            p.addParamValue('y', 0, @(x) isnumeric(x) || strcmpi(x, 'center'));
-            p.addParamValue('y_pos_is_baseline', 0, @(x) any(x == [0, 1]));
-            p.addParamValue('renderer', 1, @(x) any(x == [0, 1]));
-            p.addParamValue('formatted', false, @(x) islogical(x));
+            self.p.addParamValue('x', 0, @(x) isnumeric(x) || strcmpi(x, 'center'));
+            self.p.addParamValue('y', 0, @(x) isnumeric(x) || strcmpi(x, 'center'));
+            self.p.addParamValue('y_pos_is_baseline', 0, @(x) any(x == [0, 1]));
+            self.p.addParamValue('renderer', 1, @(x) any(x == [0, 1]));
+            self.p.addParamValue('formatted', false, @(x) islogical(x));
 
-            p.addParamValue('wrapat', [], @(x) isnumeric(x));
-            p.addParamValue('fliph', 0, @(x) any(x == [0, 1]));
-            p.addParamValue('flipv', 0, @(x) any(x == [0, 1]));
-            p.addParamValue('vert_spacing', 1, @(x) isnumeric(x));
-            p.addParamValue('right_to_left', 0, @(x) any(x == [0, 1]));
+            self.p.addParamValue('wrapat', [], @(x) isnumeric(x));
+            self.p.addParamValue('fliph', 0, @(x) any(x == [0, 1]));
+            self.p.addParamValue('flipv', 0, @(x) any(x == [0, 1]));
+            self.p.addParamValue('vert_spacing', 1, @(x) isnumeric(x));
+            self.p.addParamValue('right_to_left', 0, @(x) any(x == [0, 1]));
 
 
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end

@@ -31,23 +31,24 @@ classdef Line < PsychHandle
         smooth;
         lenient;
         center;
+        p;
     end
 
     methods
         function self = Line(varargin)
-            p = inputParser;
-            p.FunctionName = 'Line';
-            p.addParamValue('color',  [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('start_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
-            p.addParamValue('stop_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
-            p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
-            p.addParamValue('smooth', 0, @(x) any(x == 0:2));
+            self.p = inputParser;
+            self.p.FunctionName = 'Line';
+            self.p.addParamValue('color',  [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('start_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
+            self.p.addParamValue('stop_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
+            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+            self.p.addParamValue('smooth', 0, @(x) any(x == 0:2));
 
-            p.addParamValue('lenient', 0, @(x) any(x == 0:1));
-            p.addParamValue('center', [0 0], @(x) isempty(x) || size(x) == size([0 0]));
+            self.p.addParamValue('lenient', 0, @(x) any(x == 0:1));
+            self.p.addParamValue('center', [0 0], @(x) isempty(x) || size(x) == size([0 0]));
 
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
 
             % try to catch incorrectly-sized matrices
             if size(opts.start_xy, 1) == 2

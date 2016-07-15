@@ -11,6 +11,7 @@ classdef Oval < PsychFrames
 % Oval Methods:
 %        Draw - Draw the oval(s) to the specified window.
 %
+
     methods
         function self = Oval(varargin)
             self = self@PsychFrames;

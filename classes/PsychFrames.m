@@ -10,7 +10,7 @@ classdef (Abstract) PsychFrames < PsychHandle
         rect;
         pen_width;
         type;
-        p; % parser
+        p;
     end
 
     methods

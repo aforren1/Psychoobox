@@ -7,12 +7,11 @@ classdef PsychTexture < PsychHandle
     properties (SetAccess = public, GetAccess = public)
         struct_array;
         struct_proto;
-        p; % input parser
     end
 
     methods
         function self = PsychTexture(varargin)
-            self.p = inputParser;
+            self = self@PsychHandle;
             self.p.FunctionName = 'AddImage';
             self.p.addRequired('image_matrix', @(x) ismatrix(x));
             self.p.addRequired('screen_index', @(x) isnumeric(x));

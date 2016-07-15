@@ -20,26 +20,27 @@ classdef PsychWindow < PsychHandle
         flip_interval;
         frame_rate;
         priority;
+        p;
     end
 
     methods
         function self = PsychWindow(pointer, on_screen, varargin)
-            p = inputParser;
-            p.FunctionName = 'PsychWindow';
-            p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
-            p.addRequired('on_screen', @(x) islogical(x));
-            p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
-            p.addParamValue('color', [], @(x) isempty(x) || (ismatrix(x)));
-            p.addParamValue('pixel_size', 24, @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
-            p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));
-            p.addParamValue('multisample', 1, @(x) isempty(x) || (isnumeric(x) && x > 0));
-            p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
-            p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
-            p.addParamValue('alpha_blending', false, @(x) islogical(x));
+            self.p = inputParser;
+            self.p.FunctionName = 'PsychWindow';
+            self.p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
+            self.p.addRequired('on_screen', @(x) islogical(x));
+            self.p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
+            self.p.addParamValue('color', [], @(x) isempty(x) || (ismatrix(x)));
+            self.p.addParamValue('pixel_size', 24, @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
+            self.p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));
+            self.p.addParamValue('multisample', 1, @(x) isempty(x) || (isnumeric(x) && x > 0));
+            self.p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
+            self.p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
+            self.p.addParamValue('alpha_blending', false, @(x) islogical(x));
 
-            p.parse(pointer, on_screen, varargin{:});
-            opts = p.Results;
+            self.p.parse(pointer, on_screen, varargin{:});
+            opts = self.p.Results;
             if opts.skip_sync_tests
                 Screen('Preference', 'SkipSyncTests', 2);
             end
@@ -72,8 +73,8 @@ classdef PsychWindow < PsychHandle
 
         end
 
-        function Set(self, property, value)
-            Set@PsychHandle(self, property, value);
+        function Set(self, varargin)
+            Set@PsychHandle(self,varargin);
             switch property
                 case 'frame_rate'
                     Screen('FrameRate', self.pointer, 2, value);

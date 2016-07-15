@@ -52,23 +52,24 @@ classdef PsychAudio < PsychHandle
         select_channels;
         slaves;
         buffers;
+        p;
     end
 
     methods
         function self = PsychAudio(varargin)
-            p = inputParser;
-            p.FunctionName = 'PsychAudio';
-            p.addParamValue('device_id', [], @(x) isempty(x) || isnumeric(x));
-            p.addParamValue('mode', 1, @(x) any(x == [1, 2, 3, 7, 9, 10, 11]));
-            p.addParamValue('req_latency_class', 1, @(x) any(x == 0:4));
-            p.addParamValue('freq', 44100, @(x) isnumeric(x));
-            p.addParamValue('channels', 2, @(x) isnumeric(x));
-            p.addParamValue('buffer_size', [], @(x) isnumeric(x));
-            p.addParamValue('suggested_latency', [], @(x) isnumeric(x));
-            p.addParamValue('select_channels', [], @(x) isempty(x) || ismatrix(x));
+            self.p = inputParser;
+            self.p.FunctionName = 'PsychAudio';
+            self.p.addParamValue('device_id', [], @(x) isempty(x) || isnumeric(x));
+            self.p.addParamValue('mode', 1, @(x) any(x == [1, 2, 3, 7, 9, 10, 11]));
+            self.p.addParamValue('req_latency_class', 1, @(x) any(x == 0:4));
+            self.p.addParamValue('freq', 44100, @(x) isnumeric(x));
+            self.p.addParamValue('channels', 2, @(x) isnumeric(x));
+            self.p.addParamValue('buffer_size', [], @(x) isnumeric(x));
+            self.p.addParamValue('suggested_latency', [], @(x) isnumeric(x));
+            self.p.addParamValue('select_channels', [], @(x) isempty(x) || ismatrix(x));
 
-            p.parse(varargin{:});
-            opts = p.Results;
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end
