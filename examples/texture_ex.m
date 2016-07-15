@@ -20,6 +20,7 @@ textures.Draw(scrn.pointer, 1:2);
 scrn.Flip;
 WaitSecs(.5);
 KbWait;
+
 textures.AddImage(kitty, scrn.pointer, 3, 'optimize_for_draw_angle', 60);
 textures.draw_array(3).rotation_angle = 60;
 textures.draw_array(3).rect = [100 100 300 300];
