@@ -47,6 +47,7 @@ classdef PsychWindow < PsychHandle
         alpha_blending;
         verbosity;
         % derived quantities
+        center;
         flip_interval;
         frame_rate;
         priority;
@@ -95,7 +96,7 @@ classdef PsychWindow < PsychHandle
             self.flip_interval = Screen('GetFlipInterval', self.pointer);
             self.frame_rate = Screen('FrameRate', self.pointer);
             self.priority = MaxPriority(self.pointer);
-
+            self.center = CenterRect(self.rect);
             % inflexible at the moment, allow getting/setting
             if opts.alpha_blending
                 Screen('BlendFunction', self.pointer, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
