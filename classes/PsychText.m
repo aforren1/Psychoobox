@@ -96,7 +96,7 @@ classdef PsychText < PsychHandle
             Screen('TextStyle', window_pointer, self.styles.(self.style));
             Screen('TextFont', window_pointer, self.font);
             Screen('TextTransform', window_pointer, self.transform);
-            if self.formatted || strcmpi(self.x, 'center') || strcmpi(self.y, 'center'
+            if self.formatted || strcmpi(self.x, 'center') || strcmpi(self.y, 'center')
                 DrawFormattedText(window_pointer, self.val, self.x, self.y,...
                                   self.color, self.wrapat, self.fliph, self.flipv, ...
                                   self.vert_spacing, self.right_to_left);
