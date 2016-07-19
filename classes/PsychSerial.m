@@ -91,7 +91,7 @@ classdef PsychSerial < PsychHandle
             self.p.addParamValue('lenient', false, @(x) islogical(x));
             self.p.addParamValue('port', [], @(x) isempty(x) || ischar(x));
             self.p.addParamValue('baud_rate', 9600, @(x) isnumeric(x));
-            self.p.addParamValue('parity', 'None', @(x) any(not(cellfun('isempty', strfind(x, {'None', 'Even', 'Odd'})))));
+            self.p.addParamValue('parity', 'None', @(x) any(not(cellfun('isempty', strfind({'None', 'Even', 'Odd'}, x)))));
 
             self.p.addParamValue('data_bits', 8, @(x) isnumeric(x));
             self.p.addParamValue('stop_bits', 1, @(x) isnumeric(x));
@@ -151,7 +151,7 @@ classdef PsychSerial < PsychHandle
             opts = self.p.Results;
             for fns = fieldnames(opts)'
                 property_name = strrep(fns{1}, '_', '');
-                idx = find(not(cellfun('isempty', (strfind(property_name, tolower(self.param_names))))));
+                idx = find(not(cellfun('isempty', (strfind(self.param_names, property_name)))));
                 IOPort('ConfigureSerialPort', self.pointer, [self.param_names{idx}, '=', opts.(fns{1})]);
             end
         end

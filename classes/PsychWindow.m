@@ -60,8 +60,8 @@ classdef PsychWindow < PsychHandle
             self.p.FunctionName = 'PsychWindow';
             self.p.addRequired('pointer', @(x) isnumeric(x) && x >= 0);
             self.p.addRequired('on_screen', @(x) islogical(x));
-            self.p.addParamValue('rect', [], @(x) isempty(x) || (ismatrix(x) && length(x) == 4));
-            self.p.addParamValue('color', [], @(x) isempty(x) || (ismatrix(x)));
+            self.p.addParamValue('rect', [], @(x) isempty(x) || (isnumeric(x) && length(x) == 4));
+            self.p.addParamValue('color', [], @(x) isempty(x) || (isnumeric(x)));
             self.p.addParamValue('pixel_size', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('number_buffers', 2, @(x) isempty(x) || x > 0);
             self.p.addParamValue('stereo_mode', 0, @(x) isempty(x) || (x >= 0 && x <= 10));

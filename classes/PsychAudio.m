@@ -66,7 +66,7 @@ classdef PsychAudio < PsychHandle
             self.p.addParamValue('channels', 2, @(x) isnumeric(x));
             self.p.addParamValue('buffer_size', [], @(x) isnumeric(x));
             self.p.addParamValue('suggested_latency', [], @(x) isnumeric(x));
-            self.p.addParamValue('select_channels', [], @(x) isempty(x) || ismatrix(x));
+            self.p.addParamValue('select_channels', [], @(x) isempty(x) || isnumeric(x));
 
             self.p.parse(varargin{:});
             opts = self.p.Results;
@@ -103,7 +103,7 @@ classdef PsychAudio < PsychHandle
             p.FunctionName = 'AddSlave';
             p.addParamValue('mode', 1, @(x) any(x == [1, 2, 3, 7, 32, 64]));
             p.addParamValue('channels', 2, @(x) isnumeric(x));
-            p.addParamValue('select_channels', [], @(x) isempty(x) || ismatrix(x));
+            p.addParamValue('select_channels', [], @(x) isempty(x) || isnumeric(x));
             p.parse(varargin{:});
             opts = p.Results;
 

@@ -55,7 +55,7 @@ classdef PsychText < PsychHandle
             self.p.FunctionName = 'PsychText';
             self.p.addParamValue('size', 10, @(x) isnumeric(x) && x > 0);
             self.p.addParamValue('style', 'normal', ...
-            @(x) any(not(cellfun('isempty', strfind(x, {'normal','bold','underline','outline','condense','extend'})))));
+            @(x) any(not(cellfun('isempty', strfind({'normal','bold','underline','outline','condense','extend'}, x)))));
 
             self.p.addParamValue('font', 'Courier New');
             self.p.addParamValue('color', 0, @(x) isnumeric(x));
@@ -96,7 +96,7 @@ classdef PsychText < PsychHandle
             Screen('TextStyle', window_pointer, self.styles.(self.style));
             Screen('TextFont', window_pointer, self.font);
             Screen('TextTransform', window_pointer, self.transform);
-            if self.formatted || (self.x == 'center' || self.y == 'center')
+            if self.formatted || strcmpi(self.x, 'center') || strcmpi(self.y, 'center'
                 DrawFormattedText(window_pointer, self.val, self.x, self.y,...
                                   self.color, self.wrapat, self.fliph, self.flipv, ...
                                   self.vert_spacing, self.right_to_left);
