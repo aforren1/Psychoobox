@@ -8,6 +8,13 @@ classdef (Abstract) PsychFrames < PsychHandle
         fill_color; % if empty, frame only
         frame_color; % if empty, fill only
         rect;
+
+        % alternatively to rect...
+        x_pos;
+        y_pos;
+        x_scale;
+        y_scale;
+        
         pen_width;
         type;
         p;
