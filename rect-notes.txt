@@ -1,0 +1,21 @@
+
+% new positions for rectangles
+x_pos = [.5 .1];
+y_pos = [.3 .5];
+
+% amount to scale each dimension of the rectangle by (as a function of the
+% host rectangle)
+scal_x = [.1 .1];
+scal_y = [.1 .2];
+
+% retrieve rectangle size
+%rect = Screen('Rect', win.pointer);
+rect = [0 0 600 600];
+
+% scale target rectangle size as a function of window size
+xsize = scal_x * (rect(3) - rect(1));
+ysize = scal_y * (rect(4) - rect(2));
+
+new_rect = CenterRectOnPoint([zeros(2, size(xsize,2)); [xsize;ysize]],...
+                             x_pos * (rect(3) - rect(1)),...
+                             y_pos * (rect(4) - rect(2)));
