@@ -8,7 +8,7 @@ scrn = PsychWindow(0, true,...
 % pkg load image
 [kitty, map, alp] = imread('misc/kitten.png');
 textures = PsychTexture;
-textures.AddImage(kitty, scrn.pointer, 1);
+textures.AddImage(kitty, scrn.pointer, 1, 'rel_x_pos', .5, 'rel_y_pos', .5, 'rel_x_scale', 0.3);
 textures.Draw(scrn.pointer, 1);
 scrn.Flip;
 KbWait;
@@ -16,7 +16,7 @@ KbWait;
 textures.AddImage(kitty, scrn.pointer, 2, 'optimize_for_draw_angle', 30);
 [x, y] = RectCenter(Screen(scrn.pointer, 'rect'));
 new_rect = [x - 100, y - 100, x + 100, y + 100];
-textures.Set(1, 'draw_rect', new_rect);
+%textures.Set(1, 'draw_rect', new_rect);
 textures.Set(2, 'rotation_angle', 30, 'draw_rect',  [50 50 200 200]);
 textures.Draw(scrn.pointer, 1:2);
 scrn.Flip;
