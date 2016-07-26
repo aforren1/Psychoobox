@@ -40,12 +40,13 @@ classdef Oval < PsychFrames
         function Draw(self, pointer)
             % Draw(window_pointer) Draw to the specified window.
 
+            Draw@PsychFrames(self, pointer);
             if strcmpi(self.type, 'FillOval') || strcmpi(self.type, 'FillFrame')
-                Screen('FillOval', pointer, self.fill_color, self.rect);
+                Screen('FillOval', pointer, self.fill_color, self.temp_rect);
             end
 
             if strcmpi(self.type, 'FrameOval') || strcmpi(self.type, 'FillFrame')
-                Screen('FrameOval', pointer, self.frame_color, self.rect, self.pen_width);
+                Screen('FrameOval', pointer, self.frame_color, self.temp_rect, self.pen_width);
             end
         end % end Draw
     end % end methods

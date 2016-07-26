@@ -48,14 +48,14 @@ classdef Arc < PsychFrames
 
         function Draw(self, pointer)
             % Draw(window_pointer) Draw to the specified window.
-
+            Draw@PsychFrames(self, pointer);
             if strcmpi(self.type, 'FillArc') || strcmpi(self.type, 'FillFrame')
-                Screen('FillArc', pointer, self.fill_color, self.rect, ...
+                Screen('FillArc', pointer, self.fill_color, self.temp_rect, ...
                        self.start_angle, self.arc_angle);
             end
 
             if strcmpi(self.type, 'FrameArc') || strcmpi(self.type, 'FillFrame')
-                Screen('FrameArc', pointer, self.frame_color, self.rect, ...
+                Screen('FrameArc', pointer, self.frame_color, self.temp_rect, ...
                        self.start_angle, self.arc_angle, self.pen_width);
             end
         end % end Draw
