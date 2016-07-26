@@ -10,11 +10,14 @@ classdef (Abstract) PsychFrames < PsychHandle
         rect;
 
         % alternatively to rect...
-        x_pos;
+        % *_pos give the point to center on, *_scale gives the amount to scale by
+        % if one pos exist, both pos and at least one scale exist
+        % if one scale is missing, scale by the existing scale
+        x_pos; % 1xN matrix, N being the number of rects
         y_pos;
-        x_scale;
+        x_scale; % 1xN matrix, N being the number of rects
         y_scale;
-        
+
         pen_width;
         type;
         p;
@@ -27,6 +30,12 @@ classdef (Abstract) PsychFrames < PsychHandle
             self.p.addParamValue('frame_color', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('rect', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+
+            self.p.addParamValue('x_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
+            self.p.addParamValue('y_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
+            self.p.addParamValue('x_scale', [], @(x) isempty(x) || x >= 0);
+            self.p.addParamValue('y_scale', [], @(x) isempty(x) || x >= 0);
+
         end
 
         function Draw(self, pointer)
