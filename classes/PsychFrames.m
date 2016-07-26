@@ -13,10 +13,13 @@ classdef (Abstract) PsychFrames < PsychHandle
         % *_pos give the point to center on, *_scale gives the amount to scale by
         % if one pos exist, both pos and at least one scale exist
         % if one scale is missing, scale by the existing scale
-        x_pos; % 1xN matrix, N being the number of rects
-        y_pos;
-        x_scale; % 1xN matrix, N being the number of rects
-        y_scale;
+        % If rect is empty, use these
+        rel_x_pos; % 1xN matrix, N being the number of rects
+        rel_y_pos;
+        rel_x_scale; % 1xN matrix, N being the number of rects
+        rel_y_scale;
+
+        temp_rect;
 
         pen_width;
         type;
@@ -31,16 +34,50 @@ classdef (Abstract) PsychFrames < PsychHandle
             self.p.addParamValue('rect', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
 
-            self.p.addParamValue('x_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('y_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('x_scale', [], @(x) isempty(x) || x >= 0);
-            self.p.addParamValue('y_scale', [], @(x) isempty(x) || x >= 0);
+            self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
+            self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
+            self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || x >= 0);
+            self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || x >= 0);
 
         end
 
         function Draw(self, pointer)
         % Draw(window_pointer) Draw to the specified window.
         %
+
+        if isempty(self.rect)
+            win_rect = Screen('Rect', pointer);
+
+            if any(isempty(self.rel_x_pos), isempty(self.rel_y_pos))
+                error('Must specify either rel_x_pos and rel_y_pos or rect.')
+            end
+
+            if all(isempty(self.rel_x_scale), isempty(self.rel_y_scale))
+                error('Must specify the scale of at least one dimension.')
+            end
+
+            if isempty(self.rel_x_scale)
+                % assign dims from y
+                y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
+                x_size = y_size;
+            elseif isempty(self.rel_y_scale)
+                % assign dims from x
+                x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
+                y_size = x_size;
+            else
+                x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
+                y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
+            end
+
+            self.temp_rect = CenterRectOnPoint([zeros(2, size(x_size, 2)); [x_size; y_size]], ...
+                                         self.rel_x_pos * (win_rect(3) - win_rect(1)), ...
+                                         self.rel_y_pos * (win_rect(4) - win_rect(2)));
+
+        else
+            self.temp_rect = self.rect;
+        end
+
+
         end
     end
 end
