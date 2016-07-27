@@ -16,8 +16,10 @@ classdef (Abstract) PsychFrames < PsychHandle
         % If rect is empty, use these
         rel_x_pos; % 1xN matrix, N being the number of rects
         rel_y_pos;
+        %rel_pos;
         rel_x_scale; % 1xN matrix, N being the number of rects
         rel_y_scale;
+        %rel_scale;
 
         temp_rect;
 
