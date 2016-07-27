@@ -47,38 +47,37 @@ classdef (Abstract) PsychFrames < PsychHandle
         % Draw(window_pointer) Draw to the specified window.
         %
 
-        if isempty(self.rect)
-            win_rect = Screen('Rect', pointer);
+            if isempty(self.rect)
+                win_rect = Screen('Rect', pointer);
 
-            if any(isempty(self.rel_x_pos), isempty(self.rel_y_pos))
-                error('Must specify either rel_x_pos and rel_y_pos or rect.')
-            end
+                if any(isempty(self.rel_x_pos), isempty(self.rel_y_pos))
+                    error('Must specify either rel_x_pos and rel_y_pos or rect.')
+                end
 
-            if all(isempty(self.rel_x_scale), isempty(self.rel_y_scale))
-                error('Must specify the scale of at least one dimension.')
-            end
+                if all(isempty(self.rel_x_scale), isempty(self.rel_y_scale))
+                    error('Must specify the scale of at least one dimension.')
+                end
 
-            if isempty(self.rel_x_scale)
-                % assign dims from y
-                y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
-                x_size = y_size;
-            elseif isempty(self.rel_y_scale)
-                % assign dims from x
-                x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
-                y_size = x_size;
+                if isempty(self.rel_x_scale)
+                    % assign dims from y
+                    y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
+                    x_size = y_size;
+                elseif isempty(self.rel_y_scale)
+                    % assign dims from x
+                    x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
+                    y_size = x_size;
+                else
+                    x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
+                    y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
+                end
+
+                self.temp_rect = CenterRectOnPoint([zeros(2, size(x_size, 2)); [x_size; y_size]], ...
+                                             self.rel_x_pos * (win_rect(3) - win_rect(1)), ...
+                                             self.rel_y_pos * (win_rect(4) - win_rect(2)));
+
             else
-                x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
-                y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
+                self.temp_rect = self.rect;
             end
-
-            self.temp_rect = CenterRectOnPoint([zeros(2, size(x_size, 2)); [x_size; y_size]], ...
-                                         self.rel_x_pos * (win_rect(3) - win_rect(1)), ...
-                                         self.rel_y_pos * (win_rect(4) - win_rect(2)));
-
-        else
-            self.temp_rect = self.rect;
-        end
-
 
         end
     end
