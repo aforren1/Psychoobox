@@ -70,10 +70,10 @@ classdef (Abstract) PsychFrames < PsychHandle
                     x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
                     y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
                 end
+                tmprct = [zeros(2, size(x_size, 2)); [x_size; y_size]];
                 tmpx = self.rel_x_pos * (win_rect(3) - win_rect(1));
                 tmpy = self.rel_y_pos * (win_rect(4) - win_rect(2));
                 if all(size(tmprct) == 4)
-                    tmprct = [zeros(2, size(x_size, 2)); [x_size; y_size]];
                     [cx, cy] = RectCenter(tmprct);
                     tmprct([1, 3], :) = tmprct([1, 3], :) + tmpx - cx;
                     tmprct([2, 4], :) = tmprct([2, 4], :) + tmpy - cy;
