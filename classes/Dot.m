@@ -38,7 +38,7 @@ classdef Dot < PsychHandle
             self.p = inputParser;
             self.p.FunctionName = 'Dot';
             self.p.addParamValue('xy', [], @(x) isempty(x) || (isnumeric(x) && any(size(x) == 2)));
-            self.p.addParamValue('size', 1, @(x) x > 0);
+            self.p.addParamValue('size', 1, @(x) all(x > 0));
             self.p.addParamValue('color', [0 0 0], @(x) isnumeric(x));
             self.p.addParamValue('center', [0 0], @(x) isnumeric(x));
             self.p.addParamValue('dot_type', 0, @(x) any(x == 0:4));
