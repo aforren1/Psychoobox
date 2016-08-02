@@ -41,7 +41,7 @@ classdef Line < PsychHandle
             self.p.addParamValue('color',  [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('start_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
             self.p.addParamValue('stop_xy', [], @(x) isempty(x) || (isnumeric(x) && size(x, 2) == 2));
-            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && all(x > 0));
             self.p.addParamValue('smooth', 0, @(x) any(x == 0:2));
 
             self.p.addParamValue('lenient', 0, @(x) any(x == 0:1));

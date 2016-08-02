@@ -30,10 +30,10 @@ classdef PsychTexture < PsychHandle
             self.p.addParamValue('modulate_color', []);
             self.p.addParamValue('aux_parameters', []);
 
-            self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || x >= 0);
-            self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || x >= 0);
+            self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+            self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+            self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || all(x >= 0));
+            self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || all(x >= 0));
 
             self.img_array = struct('pointer', [],  ...
                                     'original_matrix', [], ...
@@ -69,11 +69,11 @@ classdef PsychTexture < PsychHandle
             if isempty(opts.draw_rect)
                 win_rect = Screen('Rect', pointer);
 
-                if any(isempty(opts.rel_x_pos), isempty(opts.rel_y_pos))
+                if any([isempty(opts.rel_x_pos), isempty(opts.rel_y_pos)])
                     error('Must specify either rel_x_pos and rel_y_pos or rect.')
                 end
 
-                if all(isempty(opts.rel_x_scale), isempty(opts.rel_y_scale))
+                if all([isempty(opts.rel_x_scale), isempty(opts.rel_y_scale)])
                     error('Must specify the scale of at least one dimension.')
                 end
 
@@ -127,8 +127,15 @@ classdef PsychTexture < PsychHandle
         function Set(self, index, varargin)
             self.p.parse(varargin{:});
             opts = self.p.Results;
+            if ~IsOctave
+                temp_names = fieldnames(opts)';
+                delta_names = temp_names(~ismember(temp_names,...
+                                         self.p.UsingDefaults));
+            else
+                delta_names = fieldnames(opts)';
+            end
 
-            for fns = fieldnames(opts)'
+            for fns = delta_names
                 self.img_array(index).(fns{1}) = opts.(fns{1});
             end
         end % end set

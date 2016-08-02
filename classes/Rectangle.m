@@ -17,6 +17,7 @@ classdef Rectangle < PsychFrames
             self.p.FunctionName = 'Rectangle';
             self.p.parse(varargin{:});
             opts = self.p.Results;
+            
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});
             end

@@ -34,12 +34,12 @@ classdef (Abstract) PsychFrames < PsychHandle
             self.p.addParamValue('fill_color', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('frame_color', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('rect', [], @(x) isempty(x) || isnumeric(x));
-            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && x > 0);
+            self.p.addParamValue('pen_width', 1, @(x) isnumeric(x) && all(x > 0));
 
-            self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (x >= 0 || x <= 1));
-            self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || x >= 0);
-            self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || x >= 0);
+            self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+            self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+            self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || all(x >= 0));
+            self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || all(x >= 0));
 
         end
 
@@ -50,11 +50,11 @@ classdef (Abstract) PsychFrames < PsychHandle
             if isempty(self.rect)
                 win_rect = Screen('Rect', pointer);
 
-                if any(isempty(self.rel_x_pos), isempty(self.rel_y_pos))
+                if any([isempty(self.rel_x_pos), isempty(self.rel_y_pos)])
                     error('Must specify either rel_x_pos and rel_y_pos or rect.')
                 end
 
-                if all(isempty(self.rel_x_scale), isempty(self.rel_y_scale))
+                if all([isempty(self.rel_x_scale), isempty(self.rel_y_scale)])
                     error('Must specify the scale of at least one dimension.')
                 end
 

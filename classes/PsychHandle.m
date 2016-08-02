@@ -33,9 +33,17 @@ classdef (Abstract) PsychHandle < handle
         %    See also GET.
             self.p.parse(varargin{:});
             opts = self.p.Results;
-             for fns = fieldnames(opts)'
-                 self.(fns{1}) = opts.(fns{1});
-             end
+            if ~IsOctave
+                temp_names = fieldnames(opts)';
+                delta_names = temp_names(~ismember(temp_names,...
+                                         self.p.UsingDefaults));
+            else
+                delta_names = fieldnames(opts)';
+            end
+
+            for fns = delta_names
+             self.(fns{1}) = opts.(fns{1});
+            end
         end
 
         function Close(self)
