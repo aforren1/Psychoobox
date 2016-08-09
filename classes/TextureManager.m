@@ -25,34 +25,87 @@ classdef (Abstract) TextureManager < handle
             self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
             self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || all(x >= 0));
             self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || all(x >= 0));
+
+            self.obj_array = struct('pointer', [],  ...
+                                    'float_precision', 0, ...
+                                    'texture_orientation', 0, ...
+                                    'source_rect', [], ...
+                                    'draw_rect', [], ...
+                                    'rotation_angle', 0, ...
+                                    'filter_mode', 0, ...% -3 to 5
+                                    'global_alpha', 1, ...
+                                    'modulate_color', [], ...
+                                    'texture_shader', [], ...
+                                    'special_flags', [], ...
+                                    'aux_parameters', [], ...
+                                    'rel_x_pos', [], ...
+                                    'rel_y_pos', [], ...
+                                    'rel_x_scale', [], ...
+                                    'rel_y_scale', [], ...
+                                    'temp_rect', []);
         end
 
-        function Add(self, mat, indices, varargin)
+        function Add(self, indices, varargin)
             self.p.parse(varargin{:});
             opts = self.p.Results;
-
-            self.obj_array(indices).original = mat;
-
+            for fns = fieldnames(opts)'
+                self.obj_array(indices).(fns{1}) = opts.(fns{1});
+            end
         end
 
-        function Prime(self, pointer, indices)
-        % Convert matrix to openGL texture
-        % only necessary for image
-        self.obj_array(indices).pointer = Screen('MakeTexture', pointer, ...
-                                                 self.obj_array(), ...
-                                                 self.obj_array(indices).optimize_for_draw_angle, ...
-                                                 self.obj_array(indices).special_flags, self.obj_array(indices).float_precision, ...
-                                                 self.obj_array(indices).texture_orientation, self.obj_array(indices).texture_shader);
-
-
+        function Remove(self, indices)
+        % is it better to do space filling (set all properties to []) or
+        % this (which shifts the indices)
+            self.obj_array(indices) = [];
         end
 
+        function Prime(self, win_pointer, indices)
+        % Associate specific indices with a screen
+        % Must be an on-screen window when calling this!
+
+            % figure out the draw_rect
+                self.obj_array(indices).original_matrix = image_matrix;
+                opts = self.obj_array(indices); % for shorthand
+
+                if isempty(opts.draw_rect)
+                    win_rect = Screen('Rect', win_pointer);
+
+                    if any([isempty(opts.rel_x_pos), isempty(opts.rel_y_pos)])
+                        error('Must specify either rel_x_pos and rel_y_pos or rect.')
+                    end
+
+                    if all([isempty(opts.rel_x_scale), isempty(opts.rel_y_scale)])
+                        error('Must specify the scale of at least one dimension.')
+                    end
+
+                    if isempty(opts.rel_x_scale)
+                        % assign dims from y
+                        y_size = opts.rel_y_scale * (win_rect(4) - win_rect(2));
+                        x_size = y_size;
+                    elseif isempty(opts.rel_y_scale)
+                        % assign dims from x
+                        x_size = opts.rel_x_scale * (win_rect(3) - win_rect(1));
+                        y_size = x_size;
+                    else
+                        x_size = opts.rel_x_scale * (win_rect(3) - win_rect(1));
+                        y_size = opts.rel_y_scale * (win_rect(4) - win_rect(2));
+                    end
+                    opts.temp_rect = CenterRectOnPoint([zeros(2, size(x_size, 2)); [x_size; y_size]]', ...
+                                                       opts.rel_x_pos * (win_rect(3) - win_rect(1)), ...
+                                                       opts.rel_y_pos * (win_rect(4) - win_rect(2)));
+
+                else
+                    opts.temp_rect = opts.draw_rect;
+                end
+            % Draw prototypes here (depending on shape)
+        end
 
         function Draw(self, pointer, indices)
         % imgs.Draw(win_pointer, indices)
         %
         % Draw selected textures
-            Screen('DrawTextures', pointer, [self.obj_array(indices).pointer], ...
+            Screen('DrawTextures', pointer,...
+                   [self.obj_array(indices).pointer], ...
                    reshape([self.obj_array(indices).source_rect], 4, []), ...
                    reshape([self.obj_array(indices).temp_rect], 4, []), ...
                    [self.obj_array(indices).rotation_angle], ...
