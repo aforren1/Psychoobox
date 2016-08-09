@@ -1,0 +1,9 @@
+
+function Prime(self, win_pointer, indices)
+    Prime@ShapeManager(self, win_pointer, indices);
+    Screen('FillRect', self.obj_array(indices).pointer(1), [255 255 255], ...
+           Screen('Rect', self.obj_array(indices).pointer(1)));
+    Screen('FrameRect', self.obj_array(indices).pointer(2), [255 255 255], ...
+           Screen('Rect', self.obj_array(indices).pointer(2)),...
+           self.obj_array(indices, 1).pen_width);
+end
