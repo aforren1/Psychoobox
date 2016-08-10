@@ -7,16 +7,19 @@ classdef (Abstract) ShapeManager < TextureManager
             self.p.addParamValue('fill_color', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('frame_color', [], @(x) isempty(x) || isnumeric(x));
             self.p.addParamValue('pen_width', 1, @(x) x >= 0);
+            self.proto_pointers = [];
         end
 
         function Prime(self, win_pointer, indices)
             Prime@TextureManager(self, win_pointer, indices);
             % check if only fill, only outline, or both
             % How to handle missing??
-            self.proto_pointers(1) = Screen('OpenOffscreenWindow', win_pointer,...
-                                            [0 0 0 0], [0 0 800 800]);
-            self.proto_pointers(2) = Screen('OpenOffscreenWindow', win_pointer,...
-                                            [0 0 0 0], [0 0 800 800]);
+            if isempty(self.proto_pointers)
+                self.proto_pointers(1) = Screen('OpenOffscreenWindow', win_pointer,...
+                                                [0 0 0 0], [0 0 800 800]);
+                self.proto_pointers(2) = Screen('OpenOffscreenWindow', win_pointer,...
+                                                [0 0 0 0], [0 0 800 800]);
+            end
         end
     end
 end
