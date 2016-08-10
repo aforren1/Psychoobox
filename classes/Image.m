@@ -1,11 +1,12 @@
-classdef ImageManager < TextureManager
+classdef Image < TextureManager
     properties
         original % original image matrix
     end
 
     methods
-        function self = ImageManager()
+        function self = Image()
             self = self@TextureManager;
+            self.p.FunctionName = 'Image';
             self.obj_array.original = []; % original image/matrix
         end
 
