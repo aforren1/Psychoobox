@@ -43,12 +43,12 @@ classdef (Abstract) PsychFrames < PsychHandle
 
         end
 
-        function Draw(self, pointer)
+        function Draw(self, win_pointer)
         % Draw(window_pointer) Draw to the specified window.
         %
 
             if isempty(self.rect)
-                win_rect = Screen('Rect', pointer);
+                win_rect = Screen('Rect', win_pointer);
 
                 if any([isempty(self.rel_x_pos), isempty(self.rel_y_pos)])
                     error('Must specify either rel_x_pos and rel_y_pos or rect.')

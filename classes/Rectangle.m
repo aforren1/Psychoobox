@@ -1,10 +1,10 @@
 classdef Rectangle < ShapeManager
 
     methods
-
         function self = Rectangle(varargin)
             self.p.FunctionName = 'Rectangle';
         end
+        
         function Prime(self, win_pointer, indices)
             Prime@ShapeManager(self, win_pointer, indices);
             Screen('FillRect', self.proto_pointers(1), [255 255 255], ...

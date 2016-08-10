@@ -68,32 +68,9 @@ classdef (Abstract) TextureManager < handle
                 opts = self.obj_array(indices); % for shorthand
 
                 if isempty(opts.draw_rect)
-                    win_rect = Screen('Rect', win_pointer);
-
-                    if any([isempty(opts.rel_x_pos), isempty(opts.rel_y_pos)])
-                        error('Must specify either rel_x_pos and rel_y_pos or rect.')
-                    end
-
-                    if all([isempty(opts.rel_x_scale), isempty(opts.rel_y_scale)])
-                        error('Must specify the scale of at least one dimension.')
-                    end
-
-                    if isempty(opts.rel_x_scale)
-                        % assign dims from y
-                        y_size = opts.rel_y_scale * (win_rect(4) - win_rect(2));
-                        x_size = y_size;
-                    elseif isempty(opts.rel_y_scale)
-                        % assign dims from x
-                        x_size = opts.rel_x_scale * (win_rect(3) - win_rect(1));
-                        y_size = x_size;
-                    else
-                        x_size = opts.rel_x_scale * (win_rect(3) - win_rect(1));
-                        y_size = opts.rel_y_scale * (win_rect(4) - win_rect(2));
-                    end
-                    opts.temp_rect = CenterRectOnPoint([zeros(2, size(x_size, 2)); [x_size; y_size]].', ...
-                                                       opts.rel_x_pos * (win_rect(3) - win_rect(1)), ...
-                                                       opts.rel_y_pos * (win_rect(4) - win_rect(2)));
-
+                    opts.temp_rect = RelativeToRect(opts.rel_x_pos, opts.rel_y_pos, ...
+                                                    opts.rel_x_scale, opts.rel_y_scale, ...
+                                                    Screen('Rect', win_pointer));
                 else
                     opts.temp_rect = opts.draw_rect;
                 end
