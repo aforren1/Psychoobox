@@ -32,6 +32,7 @@ classdef (Abstract) ShapeManager < TextureManager
                 else
                     error('Settings must be of length 1 or the same length as the indices');
                 end
+
                 if strcmp(fns{1}, 'fill_color')
                     [self.fill_array(indices).color] = tmpfun(opts.fill_color);
                 elseif strcmp(fns{1}, 'frame_color')
