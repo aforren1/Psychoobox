@@ -8,7 +8,6 @@ classdef (Abstract) TextureManager < handle
         function self = TextureManager()
             self.obj_array = struct;
             self.p = inputParser;
-            self.p.addParamValue('optimize_for_draw_angle', 0, @(x) isnumeric(x));
             self.p.addParamValue('special_flags', 0, @(x) any(x == [0 1 2 4 8 32]));
             self.p.addParamValue('float_precision', 0, @(x) isnumeric(x));
             self.p.addParamValue('texture_orientation', 0, @(x) any(x == 0:3));
@@ -42,7 +41,7 @@ classdef (Abstract) TextureManager < handle
                                     'rel_y_pos', [], ...
                                     'rel_x_scale', [], ...
                                     'rel_y_scale', [], ...
-                                    'temp_rect', []);
+                                    'temp_rect', []); % internal rect used to draw
         end
 
         function Add(self, indices, varargin)
