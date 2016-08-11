@@ -17,12 +17,11 @@ function out_rect = RelativeToRect(rel_x_pos, rel_y_pos, ...
     end
 
     tmprct = [zeros(2, size(x_size, 2)); [x_size; y_size]];
+    % Manual hack for 4x4 rect array
     if all(size(tmprct) == 4)
         [cx, cy] = RectCenter(tmprct);
-        tmpx = rel_x_pos * (reference_rect(3) - reference_rect(1));
-        tmpy = rel_y_pos * (reference_rect(4) - reference_rect(2));
-        tmprct([1, 3], :) = tmprct([1, 3], :) + tmpx - cx;
-        tmprct([2, 4], :) = tmprct([2, 4], :) + tmpy - cy;
+        tmprct([1, 3], :) = tmprct([1, 3], :) + (reference_rect(3) - reference_rect(1)) - cx;
+        tmprct([2, 4], :) = tmprct([2, 4], :) + (reference_rect(4) - reference_rect(2)) - cy;
         out_rect = tmprct;
     else
         out_rect = CenterRectOnPoint(tmprct, ...
