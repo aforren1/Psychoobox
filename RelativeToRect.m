@@ -2,15 +2,6 @@ function out_rect = RelativeToRect(rel_x_pos, rel_y_pos, ...
                                    rel_x_scale, rel_y_scale, ...
                                    reference_rect)
 % Use NaNs to allow individual missing vals
-%
-    if any([isempty(rel_x_pos), isempty(rel_y_pos)])
-       error('Must specify either rel_x_pos and rel_y_pos or rect.')
-    end
-
-    if all([isempty(rel_x_scale), isempty(rel_y_scale)])
-       error('Must specify the scale of at least one dimension.')
-    end
-
     y_size = rel_y_scale * (reference_rect(4) - reference_rect(2));
     x_size = rel_x_scale * (reference_rect(3) - reference_rect(1));
     if any(isnan(y_size))
@@ -20,7 +11,7 @@ function out_rect = RelativeToRect(rel_x_pos, rel_y_pos, ...
         x_size(isnan(x_size)) = y_size(isnan(x_size));
     end
 
-    if ismember(isnan(y_size), isnan(x_size))
+    if any(isnan(y_size), isnan(x_size))
         % todo: add index at least, for debugging
         error('One dimension must not be nan!')
     end
