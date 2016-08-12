@@ -59,7 +59,7 @@ classdef (Abstract) TextureManager < handle
         end
 
         function Prime(self, win_pointer, indices)
-        % Associate specific indices with a screen
+        % Associate sepecific indices with a screen
         % Must be an on-screen window when calling this!
 
             % figure out the draw_rect

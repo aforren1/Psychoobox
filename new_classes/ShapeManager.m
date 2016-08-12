@@ -12,12 +12,30 @@ classdef (Abstract) ShapeManager < TextureManager
     end
 
     methods
-        function self = ShapeManager(varargin)
-
+        function self = ShapeManager()
+            self.p.addParamValue('fill_color', [nan nan nan], @(x) isnan(x) || isnumeric(x));
+            self.p.addParamValue('frame_color', [nan nan nan], @(x) isnan(x) || isnumeric(x));
+            self.p.addParamValue('fill_alpha', 1, @(x) x >= 0 && x <= 1);
+            self.p.addParamValue('frame_alpha', 1, @(x) x >= 0 && x <= 1);
         end
 
-        function Add(varargin)
+        function Prime(self, win_pointer, indices)
+            Prime@TextureManager(self, win_pointer, indices);
 
+            if isempty(self.proto_pointers)
+                self.proto_pointers(1) = Screen('OpenOffscreenWindow', win_pointer,...
+                                                [0 0 0 0], [0 0 512 512]);
+                self.proto_pointers(2) = Screen('OpenOffscreenWindow', win_pointer,...
+                                                [0 0 0 0], [0 0 512 512]);
+                % Draw shapes here (eg. Fill*)
+            end
         end
 
-        function Prime()
+        function Draw(self, win_pointer, indices)
+        % need to do logical subsetting about whether frame or fill
+        % are nan, then build up combinations of matrices that work
+        % properly
+
+        end
+    end
+end

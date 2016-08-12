@@ -23,6 +23,24 @@ classdef (Abstract) TextureManager < handle
         function self = TextureManager()
         % Initialize the manager object.
         % No arguments, returns object of class TextureManager.
+        self.pointer = [];
+        self.p = inputParser;
+        self.p.addParamValue('special_flags', 0, @(x) any(x == [0 1 2 4 8 32]));
+        self.p.addParamValue('float_precision', 0, @(x) isnumeric(x));
+        self.p.addParamValue('texture_orientation', 0, @(x) any(x == 0:3));
+        self.p.addParamValue('texture_shader', 0);
+        self.p.addParamValue('source_rect', [], @(x) isempty(x) || isnumeric(x));
+        self.p.addParamValue('draw_rect', [], @(x) isempty(x) || isnumeric(x));
+        self.p.addParamValue('rotation_angle', 0, @(x) isnumeric(x));
+        self.p.addParamValue('filter_mode', 0, @(x) any(x == -3:5));
+        self.p.addParamValue('global_alpha', 1, @(x) x >= 0 && x <= 1);
+        self.p.addParamValue('modulate_color', []);
+        self.p.addParamValue('aux_parameters', []);
+
+        self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+        self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
+        self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || all(x >= 0));
+        self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || all(x >= 0));
 
         end
 
@@ -53,30 +71,65 @@ classdef (Abstract) TextureManager < handle
         % % Add two rectangles
         % myobj.Add(1:2, 'rel_x_pos', [.1 .9], 'rel_y_pos', [.9 .1], ...
         %           'modulate_color', [255 0 0; 0 255 0]', 'global_alpha', [.9, .3]);
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
+            for fns = fieldnames(opts)'
+                self.(fns{1})(:, indices) = opts.(fns{1});
+            end
         end
 
         function Prime(self, win_pointer, indices)
-        % Prepare specific indices for drawing on the specified win_pointer.
+        % Prepare specific indices for drawing on the specified window.
         % Usage:
         % myobj.Prime(win1, 1:3);
-        end
-
-        function Remove(self, win_pointer, indices)
-        % Remove specific indices.
+            if isempty(self.draw_rect)
+                self.temp_rect(:, indices) = RelativeToRect(self.rel_x_pos(:, indices),...
+                                                            self.rel_y_pos(:, indices), ...
+                                                            self.rel_x_scale(:, indices),...
+                                                            self.rel_y_scale(:, indices), ...
+                                                            Screen('Rect', win_pointer));
+            else
+                % TODO: deprecate at some point?
+                self.temp_rect(:, indices) = self.draw_rect(:, indices);
+            end
+            % Draw prototypes here (for shapes) or maketextures
         end
 
         function Draw(self, win_pointer, indices)
         % Draw objects from specified indices to the window.
+            Screen('DrawTextures', win_pointer, ...
+                   [self.pointer(indices)], ...
+                   [self.source_rect(:, indices)], ...
+                   [self.temp_rect(:, indices)], ...
+                   [self.rotation_angle(indices)], ...
+                   [self.filter_mode(indices)], ...
+                   [self.global_alpha(indices)], ...
+                   [self.modulate_color(:, indices)], ...
+                   [self.texture_shader(indices)], ...
+                   [self.special_flags(indices)], ...
+                   [self.aux_parameters(indices)]);
         end
 
         function Set(self, indices, varargin)
         % Set particular values
+            self.p.parse(varargin{:});
+            opts = self.p.Results;
+            if ~IsOctave
+                temp_names = fieldnames(opts)';
+                delta_names = temp_names(~ismember(temp_names,...
+                                         self.p.UsingDefaults));
+            else
+                delta_names = fieldnames(opts)';
+            end
 
+            for fns = delta_names
+                self.(fns{1})(:, indices) = opts.(fns{1});
+            end
         end
 
-        function Get(self, indices, varargin)
+        function value = Get(self, indices, property)
         % Get particular values
-
+            value = self.(property)(:, indices);
         end
 
         function new = Copy(self)
