@@ -68,7 +68,7 @@ classdef PsychWindow < PsychHandle
             self.p.addParamValue('multisample', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('imaging_mode', 0, @(x) isempty(x) || (isnumeric(x) && x >= 0));
             self.p.addParamValue('skip_sync_tests', false, @(x) islogical(x));
-            self.p.addParamValue('alpha_blending', false, @(x) islogical(x));
+            self.p.addParamValue('alpha_blending', true, @(x) islogical(x));
 
             self.p.parse(pointer, on_screen, varargin{:});
             opts = self.p.Results;
@@ -159,10 +159,10 @@ classdef PsychWindow < PsychHandle
             %            If set to 1, `time_elapsed` is the amount of time since the
             %            previous flip.
             % Both `dont_clear` and `sync` are optional.
-            if ~exist('dont_clear')
+            if ~exist('dont_clear', 'var')
                 dont_clear = [];
             end
-            if ~exist('sync')
+            if ~exist('sync', 'var')
                 sync = [];
             end
             time_elapsed = Screen('DrawingFinished', self.pointer, dont_clear, sync);

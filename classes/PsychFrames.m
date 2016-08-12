@@ -43,46 +43,14 @@ classdef (Abstract) PsychFrames < PsychHandle
 
         end
 
-        function Draw(self, pointer)
+        function Draw(self, win_pointer)
         % Draw(window_pointer) Draw to the specified window.
         %
 
             if isempty(self.rect)
-                win_rect = Screen('Rect', pointer);
-
-                if any([isempty(self.rel_x_pos), isempty(self.rel_y_pos)])
-                    error('Must specify either rel_x_pos and rel_y_pos or rect.')
-                end
-
-                if all([isempty(self.rel_x_scale), isempty(self.rel_y_scale)])
-                    error('Must specify the scale of at least one dimension.')
-                end
-
-                if isempty(self.rel_x_scale)
-                    % assign dims from y
-                    y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
-                    x_size = y_size;
-                elseif isempty(self.rel_y_scale)
-                    % assign dims from x
-                    x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
-                    y_size = x_size;
-                else
-                    x_size = self.rel_x_scale * (win_rect(3) - win_rect(1));
-                    y_size = self.rel_y_scale * (win_rect(4) - win_rect(2));
-                end
-                tmprct = [zeros(2, size(x_size, 2)); [x_size; y_size]];
-                tmpx = self.rel_x_pos * (win_rect(3) - win_rect(1));
-                tmpy = self.rel_y_pos * (win_rect(4) - win_rect(2));
-                if all(size(tmprct) == 4)
-                    [cx, cy] = RectCenter(tmprct);
-                    tmprct([1, 3], :) = tmprct([1, 3], :) + tmpx - cx;
-                    tmprct([2, 4], :) = tmprct([2, 4], :) + tmpy - cy;
-                    self.temp_rect = tmprct;
-                else
-                    self.temp_rect = CenterRectOnPoint(tmprct, ...
-                                                 tmpx, ...
-                                                 tmpy);
-                end
+                self.temp_rect = RelativeToRect(self.rel_x_pos, self.rel_y_pos, ...
+                                                self.rel_x_scale, self.rel_y_scale, ...
+                                                Screen('Rect', win_pointer));
 
             else
                 self.temp_rect = self.rect;
