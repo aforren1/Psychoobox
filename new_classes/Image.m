@@ -1,12 +1,27 @@
 classdef Image < TextureManager
     properties
         original_matrix % original image/matrix
+        pointers % pointers per texture
+        alpha
+        modulate_color
+        special_flags
+        texture_shader
+        texture_orientation
+        float_precision %
     end
 
     methods
         function self = Image()
+        % includes alpha for entire texture
             self = self@TextureManager;
             self.p.FunctionName = 'Image';
+            self.p.addParamValue('alpha', 1, @(x) x >= 0 && x <= 1);
+            self.p.addParamValue('modulate_color', []);
+            self.p.addParamValue('special_flags', 0, @(x) any(x == [0 1 2 4 8 32]));
+            self.p.addParamValue('texture_orientation', 0, @(x) any(x == 0:3));
+            self.p.addParamValue('texture_shader', 0);
+            self.p.addParamValue('float_precision', 1, @(x) isnumeric(x));
+
             % self.p.addRequired('mat', []);
             self.original_matrix = [];
         end
@@ -34,5 +49,21 @@ classdef Image < TextureManager
                                             self.texture_orientation(indices), ...
                                             self.texture_shader(indices));
         end
+
+        function Draw(self, win_pointer, indices)
+        % Draw objects from specified indices to the window.
+            Screen('DrawTextures', win_pointer, ...
+                   [self.pointers(indices)], ...
+                   [self.source_rect(:, indices)], ...
+                   [self.temp_rect(:, indices)], ...
+                   [self.rotation_angle(indices)], ...
+                   [self.filter_mode(indices)], ...
+                   [self.alpha(indices)], ...
+                   [self.modulate_color(:, indices)], ...
+                   [self.texture_shader(indices)], ...
+                   [self.special_flags(indices)], ...
+                   [self.aux_parameters(indices)]);
+        end
+
     end
 end

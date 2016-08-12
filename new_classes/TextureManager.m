@@ -1,13 +1,9 @@
 classdef (Abstract) TextureManager < handle
     properties
-        pointer % reference to offscreen window or texture (also an offscreen window)
-        float_precision %
-        texture_orientation %
         source_rect % subset of the texture to draw
         draw_rect % size of the texture on the onscreen window
         rotation_angle % angle of the texture
         filter_mode % -3 to 5, deals with zooming on texture
-        global_alpha % Alpha over the entire texture
         modulate_color % [3 x N] for color
         aux_parameters % See PTB help
         rel_x_pos % relative x position. Must be specified if draw_rect is unspecified.
@@ -16,6 +12,7 @@ classdef (Abstract) TextureManager < handle
                     % If nan, use exact length of y (to get squares, etc.)
         rel_y_scale % length along y dimension relative to onscreen window.
                     % if nan, use exact length of x (to get squares, etc.)
+        temp_rect % Used for drawing. TODO: make private
         p % input parser
     end
 
@@ -23,24 +20,17 @@ classdef (Abstract) TextureManager < handle
         function self = TextureManager()
         % Initialize the manager object.
         % No arguments, returns object of class TextureManager.
-        self.pointer = [];
         self.p = inputParser;
-        self.p.addParamValue('special_flags', 0, @(x) any(x == [0 1 2 4 8 32]));
-        self.p.addParamValue('float_precision', 0, @(x) isnumeric(x));
-        self.p.addParamValue('texture_orientation', 0, @(x) any(x == 0:3));
-        self.p.addParamValue('texture_shader', 0);
         self.p.addParamValue('source_rect', [], @(x) isempty(x) || isnumeric(x));
         self.p.addParamValue('draw_rect', [], @(x) isempty(x) || isnumeric(x));
         self.p.addParamValue('rotation_angle', 0, @(x) isnumeric(x));
         self.p.addParamValue('filter_mode', 0, @(x) any(x == -3:5));
-        self.p.addParamValue('global_alpha', 1, @(x) x >= 0 && x <= 1);
-        self.p.addParamValue('modulate_color', []);
         self.p.addParamValue('aux_parameters', []);
 
         self.p.addParamValue('rel_x_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
         self.p.addParamValue('rel_y_pos', [], @(x) isempty(x) || (all(x >= 0) || all(x <= 1)));
-        self.p.addParamValue('rel_x_scale', [], @(x) isempty(x) || all(x >= 0));
-        self.p.addParamValue('rel_y_scale', [], @(x) isempty(x) || all(x >= 0));
+        self.p.addParamValue('rel_x_scale', [], @(x) all(x(~isnan(x)) >= 0));
+        self.p.addParamValue('rel_y_scale', [], @(x) all(x(~isnan(x)) >= 0));
 
         end
 
@@ -57,7 +47,6 @@ classdef (Abstract) TextureManager < handle
         %                  If nan, use exact length of x (to get squares, etc.)
         %    modulate_color - [3 x N] matrix of colors, N being equal to the length of indices.
         %    rotation_angle - Angle of the texture in degrees.
-        %    global_alpha - Global alpha value.
         %    source_rect - Subset of the texture to draw. Currently unchecked.
         %    filter_mode - Filtering to use when zoomed in or out. See `Screen DrawTexture?`
         %    ... - other options, TBD
@@ -74,7 +63,11 @@ classdef (Abstract) TextureManager < handle
             self.p.parse(varargin{:});
             opts = self.p.Results;
             for fns = fieldnames(opts)'
-                self.(fns{1})(:, indices) = opts.(fns{1});
+                if isempty(opts.(fns{1}))
+                    self.(fns{1}) = opts.(fns{1});
+                else
+                    self.(fns{1})(:, indices) = opts.(fns{1});
+                end
             end
         end
 
@@ -93,21 +86,6 @@ classdef (Abstract) TextureManager < handle
                 self.temp_rect(:, indices) = self.draw_rect(:, indices);
             end
             % Draw prototypes here (for shapes) or maketextures
-        end
-
-        function Draw(self, win_pointer, indices)
-        % Draw objects from specified indices to the window.
-            Screen('DrawTextures', win_pointer, ...
-                   [self.pointer(indices)], ...
-                   [self.source_rect(:, indices)], ...
-                   [self.temp_rect(:, indices)], ...
-                   [self.rotation_angle(indices)], ...
-                   [self.filter_mode(indices)], ...
-                   [self.global_alpha(indices)], ...
-                   [self.modulate_color(:, indices)], ...
-                   [self.texture_shader(indices)], ...
-                   [self.special_flags(indices)], ...
-                   [self.aux_parameters(indices)]);
         end
 
         function Set(self, indices, varargin)

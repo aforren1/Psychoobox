@@ -11,7 +11,7 @@ function out_rect = RelativeToRect(rel_x_pos, rel_y_pos, ...
         x_size(isnan(x_size)) = y_size(isnan(x_size));
     end
 
-    if any(isnan(y_size), isnan(x_size))
+    if any([isnan(y_size), isnan(x_size)])
         % todo: add index at least, for debugging
         error('One dimension must not be nan!')
     end
