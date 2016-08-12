@@ -10,6 +10,9 @@ classdef (Abstract) ShapeManager < TextureManager
         frame_alpha % Alpha value of frame. Either scalar or [1 x N] vector.
         frame_stroke
 
+        % Make private
+        ds
+
     end
 
     methods
@@ -20,6 +23,7 @@ classdef (Abstract) ShapeManager < TextureManager
             self.p.addParamValue('fill_alpha', 1, @(x) all(x >= 0) && all(x <= 1));
             self.p.addParamValue('frame_alpha', 1, @(x) all(x >= 0) && all(x <= 1));
             self.p.addParamValue('frame_stroke', 10, @(x) all(x >= 0));
+            self.ds = [];
         end
 
         function Prime(self, win_pointer, indices)
@@ -32,25 +36,37 @@ classdef (Abstract) ShapeManager < TextureManager
                                                 [0 0 0 0], [0 0 512 512]);
                 % Draw shapes here (eg. Fill*)
             end
+            shape_ptrs = reshape([repmat(self.proto_pointers(1), 1, length(indices)), ...
+                                  repmat(self.proto_pointers(2), 1, length(indices))], 1, []);
+            valids = ~reshape([isnan(self.fill_color(1, indices)),...
+                               isnan(self.frame_color(1,  indices))], 1, []);
+            self.ds.shape_ptrs = shape_ptrs(valids);
+
+            temp_rect = reshape([self.temp_rect; self.temp_rect], [], 2*size(self.temp_rect, 2));
+            self.ds.temp_rect = temp_rect(:, valids);
+            rot_angle = reshape([self.rotation_angle, self.rotation_angle], 1, []);
+            self.ds.rot_angle = rot_angle(valids);
+            filt_mode = reshape([self.filter_mode, self.filter_mode], 1, []);
+            self.ds.filt_mode = filt_mode(valids);
+            alphas = reshape([self.fill_alpha, self.frame_alpha], 1, []);
+            self.ds.alphas = alphas(valids);
+            colors = reshape([self.fill_color; self.frame_color], [], 2*size(self.fill_color, 2));
+            self.ds.colors = colors(:, valids);
+            self.ds.wptr = win_pointer;
         end
 
-        function Draw(self, win_pointer, indices)
+        function Draw(self)
         % need to do logical subsetting about whether frame or fill
         % are nan, then build up combinations of matrices that work
         % properly
-        valid_fill = ~isnan(self.fill_color(1, indices));
-        valid_frame = ~isnan(self.frame_color(1,  indices));
-        shape_ptrs = [repmat(self.proto_pointers(1), 1, sum(valid_fill)), ...
-                      repmat(self.proto_pointers(2), 1, sum(valid_frame))];
-
-        Screen('DrawTextures', win_pointer, ...
-               shape_ptrs, [], ... % TODO: hash out source_rect
-               [self.temp_rect(:, valid_fill), self.temp_rect(:, valid_frame)],... % destinationRect
-               [self.rotation_angle(valid_fill), self.rotation_angle(valid_frame)], ...
-               [self.filter_mode(valid_fill), self.filter_mode(valid_frame)], ...
-               [self.fill_alpha(valid_fill), self.frame_alpha(valid_frame)], ...
-               [self.fill_color(:, valid_fill), self.frame_color(:, valid_frame)], ...
-               [], ...
+        Screen('DrawTextures', self.ds.wptr, ...
+               self.ds.shape_ptrs, [], ... % TODO: hash out source_rect
+               self.ds.temp_rect,... % destinationRect
+               self.ds.rot_angle, ...
+               self.ds.filt_mode, ...
+               self.ds.alphas, ...
+               self.ds.colors, ...
+               [], ... % handle whatever this is
                [], []); %TODO: Handle special flags and aux parameters properly
         end
     end

@@ -10,7 +10,7 @@ classdef Rectangle < ShapeManager
                    [255 255 255], Screen('Rect', self.proto_pointers(1)));
             Screen('FrameRect', self.proto_pointers(2), ...
                    [255 255 255], Screen('Rect', self.proto_pointers(2)), ...
-                   10); %TODO: Unfix stroke width
+                   30); %TODO: Unfix stroke width
         end
     end
 end
