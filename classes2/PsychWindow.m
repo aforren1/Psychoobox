@@ -29,7 +29,7 @@ classdef PsychWindow < PsychHandle
 %     Set - Set parameters.
 %     Get - Get the value of a parameter.
 %     Print - Show values of all properties.
-
+%
 % Example:
 % win = PsychWindow('screen', 0, 'color', [25 25 25], 'rect', [0 0 200 200]);
 %
