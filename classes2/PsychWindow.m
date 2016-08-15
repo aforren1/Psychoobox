@@ -23,6 +23,7 @@ classdef PsychWindow < PsychHandle
 %     ToFront - Bring the window to the front.
 %     Wipe - Draw a rectangle over the entire window.
 %     DrawingFinished - Signal that drawing is finished before the flip.
+%     Priority - Toggle high/low priority.
 %
 %     Close - Close the window.
 %     Set - Set parameters.
@@ -32,6 +33,15 @@ classdef PsychWindow < PsychHandle
 % Example:
 % win = PsychWindow('screen', 0, 'color', [25 25 25], 'rect', [0 0 200 200]);
 %
+% win.Priority(true);
+% % Draw something
+% win.DrawingFinished();
+% t_flip = win.Flip(GetSecs + 2);
+% win.Wipe(); %
+% win.Flip();
+%
+% win.Close();
+
     properties (SetAccess = public, GetAccess = public)
         % settings
         screen
@@ -134,11 +144,11 @@ classdef PsychWindow < PsychHandle
             Screen('WindowToFront', self.pointer);
         end
 
-        function Wipe(self, color)
-            % win.Wipe(color)
+        function Wipe(self)
+            % win.Wipe()
             %
             % Fill the entire window with a color.
-            Screen('FillRect', self.pointer, color, self.rect);
+            Screen('FillRect', self.pointer, self.color, self.rect);
         end
 
         function Priority(self, flag)
