@@ -8,9 +8,11 @@ offscrn2 = Screen('OpenOffscreenWindow', scrn, [0 0 0 0], Screen('Rect', scrn));
 Screen('FillOval', offscrn, [255 255 255], Screen('Rect', offscrn));
 Screen('FrameOval', offscrn2, [255 255 255], Screen('Rect', offscrn2), 20);
 
+t0 = GetSecs;
 Screen('DrawTextures', scrn, [offscrn, offscrn2, offscrn], [],...
        [80 20 140 200; 80 20 140 200; 160 300 450 400].', [30 80 -20],...
        [], [], [10 0 230; 255 30 60; 180 190 2].');
+disp(GetSecs - t0);
 
 Screen('Flip', scrn);
 KbWait;
