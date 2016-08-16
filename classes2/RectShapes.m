@@ -32,8 +32,8 @@ classdef (Abstract) RectShapes < PsychHandle
             self.p.addParamValue('frame_stroke', 5, @(x) all(x >= 0));
             self.p.addParamValue('rel_x_pos', nan, @(x) all(x >= 0) && all(x <= 1));
             self.p.addParamValue('rel_y_pos', nan, @(x) all(x >= 0) && all(x <= 1));
-            self.p.addParamValue('rel_x_scale', nan, @(x) all(x >= 0) && all(x <= 1));
-            self.p.addParamValue('rel_y_scale', nan, @(x) all(x >= 0) && all(x <= 1));
+            self.p.addParamValue('rel_x_scale', nan, @(x) any(isnan(x)) || (all(x >= 0) && all(x <= 1)));
+            self.p.addParamValue('rel_y_scale', nan, @(x) any(isnan(x)) || (all(x >= 0) && all(x <= 1)));
             self.p.addParamValue('window_pointer', nan, @(x) isempty(x) || isnumeric(x));
 
             self.modified = [];
