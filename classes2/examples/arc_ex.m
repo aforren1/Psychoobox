@@ -11,5 +11,7 @@ arc.Add(1:3, 'fill_color', [230 150 110; 8 45 68; 32 180 60]',...
 win = PsychWindow('screen', 0, 'color', [25 25 25], 'rect', [0 0 500 400]);
 arc.window_pointer = win.pointer;
 arc.Prime(1:3);
+t0 = GetSecs;
 arc.Draw(1:3);
+disp(GetSecs - t0);
 win.Flip;

@@ -19,7 +19,7 @@ classdef (Abstract) RectShapes < PsychHandle
     end
 
     methods
-        function self = RectShapes(varargin)
+        function self = RectShapes()
             self@PsychHandle;
             self.p.addParamValue('fill_color', [nan nan nan], ...
                                  @(x) all(all(isnan(x(:, isnan(x(1,:)))))) &&...

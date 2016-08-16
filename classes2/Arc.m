@@ -26,18 +26,18 @@ classdef Arc < RectShapes
             self.p.addParamValue('arc_angle', 0, @(x) isnumeric(x));
         end
         function Draw(self, indices)
-            valid_fills = ~isnan(self.fill_color(1, indices));
-            valid_frames = ~isnan(self.frame_color(1, indices));
+            valid_fills = find(~isnan(self.fill_color(1, indices)));
+            valid_frames = find(~isnan(self.frame_color(1, indices)));
 
             % hack around # of allowed arcs
-            for ii = 1:sum(valid_fills)
+            for ii = 1:length(valid_fills)
                 Screen('FillArc', self.window_pointer,...
                        [self.fill_color(:, valid_fills(ii)); self.fill_alpha(valid_fills(ii))],...
                        self.drawing_rect(:, valid_fills(ii)), self.start_angle(valid_fills(ii)),...
                        self.arc_angle(valid_fills(ii)));
             end
 
-            for ii = 1:sum(valid_frames)
+            for ii = 1:length(valid_frames)
                 Screen('FrameArc', self.window_pointer,...
                        [self.frame_color(:, valid_frames(ii)); self.frame_alpha(valid_frames(ii))],...
                        self.drawing_rect(:, valid_frames(ii)),...
