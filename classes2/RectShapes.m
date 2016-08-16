@@ -76,7 +76,11 @@ classdef (Abstract) RectShapes < PsychHandle
                     self.(fns{1})(indices) = opts.(fns{1});
                 end
             end
+        end
 
+        function Register(self, win_pointer)
+        % Tell the shape which reference to use
+            self.window_pointer = win_pointer;
         end
 
         function Prime(self, indices)
@@ -88,7 +92,7 @@ classdef (Abstract) RectShapes < PsychHandle
                 message('Indices unspecified, setting identical values for all...')
             end
             if isempty(self.window_pointer)
-                error('No reference window set. Use `shape.Set("window_pointer", win.pointer)` before calling this.')
+                error('No reference window set. Use `shape.Register(<window_pointer>)` before calling this.')
             end
             % overlap_nans = find(isnan(self.fill_color(1, indices)) == isnan(self.frame_color(1, indices)));
             % if any(overlap_nans)

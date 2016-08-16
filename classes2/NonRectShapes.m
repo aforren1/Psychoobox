@@ -19,7 +19,7 @@ classdef (Abstract) NonRectShapes < PsychHandle
             self.p.addParamValue('color', [255 255 255]', @(x) all(isnumeric(x)));
             self.p.addParamValue('alpha', 255, @(x) all(x >= 0) && all(x <= 255));
             self.p.addParamValue('diameter', 5, @(x) all(x > 0));
-            self.p.addParamValue('relative_to', 'x', @(x) all(ismember(x, {'x','y','xy'})));
+            self.p.addParamValue('relative_to', 2, @(x) any(x == (0:2)));
             self.p.addParamValue('window_pointer', nan, @(x) isempty(x) || isnumeric(x));
 
             self.modified = [];
@@ -62,7 +62,7 @@ classdef (Abstract) NonRectShapes < PsychHandle
             end
         end % end Set
 
-        function Prime(self, indices)
+        function indices = Prime(self, indices)
             if isempty(indices)
                 indices = self.modified;
                 message('Indices unspecified, setting identical values for all...')
@@ -72,6 +72,11 @@ classdef (Abstract) NonRectShapes < PsychHandle
             end
 
             % calculate relative-to-screen positions
+        end
+
+        function Register(self, win_pointer)
+        % Tell the shape which reference to use
+            self.window_pointer = win_pointer;
         end
 
     end
