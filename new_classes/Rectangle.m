@@ -4,7 +4,7 @@ classdef Rectangle < ShapeManager
             self = self@ShapeManager;
             self.p.FunctionName = 'Rectangle';
         end
-        function Prime(self, win_pointer, indices)
+        function Register(self, win_pointer)
             Prime@ShapeManager(self, win_pointer, indices);
             Screen('FillRect', self.proto_pointers(1), ...
                    [255 255 255], Screen('Rect', self.proto_pointers(1)));
