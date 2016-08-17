@@ -16,7 +16,7 @@ classdef (Abstract) Texture < PluralPsychMethods
         draw_struct
     end
 
-    properties (SetAccess = 'protected', GetAccess = 'protected')
+    properties (SetAccess = protected, GetAccess = protected)
  %       drawing_rect % used by RectRelativeToRect
  %       draw_struct % structure used to manage Primed indices
     end
