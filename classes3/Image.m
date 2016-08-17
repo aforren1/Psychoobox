@@ -8,10 +8,11 @@ classdef Image < Texture
 
     methods
         function self = Image()
-            self.p.addParamValue('original_matrix', nan, @(x) isnumeric(x) || iscell(x));
+            self.p.addParamValue('original_matrix', {}, @(x) iscell(x));
             self.p.addParamValue('modulate_color', [255 255 255 255], @(x) isnumeric(x) || isempty(x));
             self.draw_struct.image_pointer = [];
             self.draw_struct.modulate_color = [];
+            self.original_matrix = {};
         end
 
         function Add(self, indices, varargin)
@@ -23,7 +24,7 @@ classdef Image < Texture
                 if any(strcmp(fns, cell_matching))
                     self.(fns{1})(:, indices) = opts.(fns{1});
                 elseif strcmp(fns, match2)
-                    self.(fns{1}){indices} = opts.(fns{1});
+                    self.(fns{1})(indices) = opts.(fns{1});
                 else
                     self.(fns{1})(indices) = opts.(fns{1});
                 end
@@ -50,7 +51,7 @@ classdef Image < Texture
                 if any(strcmp(fns, cell_matching))
                     self.(fns{1})(:, indices) = opts.(fns{1});
                 elseif strcmp(fns, match2)
-                    self.(fns{1}){indices} = opts.(fns{1});
+                    self.(fns{1})(indices) = opts.(fns{1});
                 else
                     self.(fns{1})(indices) = opts.(fns{1});
                 end
@@ -72,7 +73,7 @@ classdef Image < Texture
         function Draw(self, indices)
             Screen('DrawTextures', self.window_pointer, ...
                    self.draw_struct.image_pointer(indices), ...
-                   [],...%self.draw_struct.source_rect(:, indices), 
+                   [],...%self.draw_struct.source_rect(:, indices),
                    self.draw_struct.draw_rect(:, indices), ...
                    self.draw_struct.rotation_angle(indices), ...
                    [], [], ...
