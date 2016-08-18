@@ -24,11 +24,8 @@ classdef (Abstract) ShapeTexture < Texture
             self.p.addParamValue('frame_alpha', 255, @(x) all(x >= 0) && all(x <= 255));
             self.p.addParamValue('frame_stroke', 10, @(x) all(x >= 0));
 
-            self.draw_struct.fill_color = [];
-            self.draw_struct.frame_color = [];
+            self.draw_struct.color = [];
             self.draw_struct.image_pointer = [];
-            self.draw_struct.fill_alpha = [];
-            self.draw_struct.frame_alpha = [];
             self.proto_pointer = [];
         end
 
@@ -56,12 +53,37 @@ classdef (Abstract) ShapeTexture < Texture
         function Prime(self)
             Prime@Texture(self);
             % reshape things to allow correct drawing order
-            self.draw_struct.draw_rect = zeros();
-            self.draw_struct.rotation_angle = zeros();
-            self.draw_struct.filter_mode = zeros();
-            self.draw_struct.fill_color = zeros(); % add on alphas!!
-            self.draw_struct.frame_color = zeros();
-            self.draw_struct.image_pointer = zeros();
+            tmp_size = size(self.drawing_rect, 2) * 2;
+            self.draw_struct.draw_rect = zeros(4, tmp_size);
+            self.draw_struct.rotation_angle = zeros(1, tmp_size);
+            self.draw_struct.filter_mode = zeros(1, tmp_size);
+            self.draw_struct.color = zeros(4, tmp_size); % add on alphas!!
+            self.draw_struct.image_pointer = zeros(1, tmp_size);
+
+            % subset based on modified AND nans in fill/frame_color
+            self.draw_struct.draw_rect(1:4, :) = self.drawing_rect;
+            self.draw_struct.rotation_angle(1, :) = self.rotation_angle(self.modified);
+            self.draw_struct.filter_mode(1, :) = self.filter_mode(self.modified);
+            self.draw_struct.color(1:3, 1:2:end) = self.fill_color(self.modified);
+            self.draw_struct.color(1:3, 2:2:end) = self.frame_color(self.modified);
+            self.draw_struct.color(4, 1:2:end) = self.fill_alpha(self.modified);
+            self.draw_struct.color(4, 2:2:end) = self.frame_alpha(self.modified);
+            self.draw_struct.image_pointer(1, 1:2:end) = self.proto_pointer(1);
+            self.draw_struct.image_pointer(1, 2:2:end) = self.proto_pointer(2);
+
+            % figure out which indices are not missing
+            indices = logical(~(isnan(self.draw_struct.fill_color(1, :)) + ...
+                          isnan(self.draw_struct.frame_color(1, :))));
+
+            self.draw_struct.draw_rect(1:4, indices) = [];
+            self.draw_struct.rotation_angle(1, indices) = [];
+            self.draw_struct.filter_mode(1, indices) = [];
+            self.draw_struct.color(1:4, indices) = [];
+            self.draw_struct.image_pointer(1, indices) = [];
+        end
+
+        function Draw(self, indices)
+
         end
 
         function Close(self)
