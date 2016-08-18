@@ -63,5 +63,10 @@ classdef (Abstract) ShapeTexture < Texture
             self.draw_struct.frame_color = zeros();
             self.draw_struct.image_pointer = zeros();
         end
+
+        function Close(self)
+            Screen('Close', self.proto_pointer);
+            delete(self);
+        end
     end
 end

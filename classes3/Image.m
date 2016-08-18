@@ -80,5 +80,10 @@ classdef Image < Texture
                    self.draw_struct.modulate_color(:, indices), ...
                    [], [], []);
         end
+
+        function Close(self)
+            Screen('Close', self.draw_struct.image_pointer);
+            delete(self);
+        end
     end
 end
