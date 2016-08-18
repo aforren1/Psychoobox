@@ -61,7 +61,8 @@ classdef (Abstract) ShapeTexture < Texture
             self.draw_struct.image_pointer = zeros(1, tmp_size);
 
             % subset based on modified AND nans in fill/frame_color
-            self.draw_struct.draw_rect(1:4, :) = self.drawing_rect;
+            self.draw_struct.draw_rect(1:4, 1:2:end) = self.drawing_rect;
+            self.draw_struct.draw_rect(1:4, 2:2:end) = self.drawing_rect;
             self.draw_struct.rotation_angle(1, :) = self.rotation_angle(self.modified);
             self.draw_struct.filter_mode(1, :) = self.filter_mode(self.modified);
             self.draw_struct.color(1:3, 1:2:end) = self.fill_color(self.modified);
@@ -71,19 +72,33 @@ classdef (Abstract) ShapeTexture < Texture
             self.draw_struct.image_pointer(1, 1:2:end) = self.proto_pointer(1);
             self.draw_struct.image_pointer(1, 2:2:end) = self.proto_pointer(2);
 
-            % figure out which indices are not missing
-            indices = logical(~(isnan(self.draw_struct.fill_color(1, :)) + ...
-                          isnan(self.draw_struct.frame_color(1, :))));
-
-            self.draw_struct.draw_rect(1:4, indices) = [];
-            self.draw_struct.rotation_angle(1, indices) = [];
-            self.draw_struct.filter_mode(1, indices) = [];
-            self.draw_struct.color(1:4, indices) = [];
-            self.draw_struct.image_pointer(1, indices) = [];
         end
 
         function Draw(self, indices)
+            tmpstrct = self.draw_struct;
+            % figure out which indices are not missing
+            indices2 = logical(~(isnan(tmpstrct.fill_color(1, :)) + ...
+                          isnan(tmpstrct.frame_color(1, :))));
+            % Subset based on requested indices first
+            indices = sort([indices, indices + 1]);
+            tmpstrct.draw_rect(1:4, indices) = [];
+            tmpstrct.rotation_angle(1, indices) = [];
+            tmpstrct.filter_mode(1, indices) = [];
+            tmpstrct.color(1:4, indices) = [];
+            tmpstrct.image_pointer(1, indices) = [];
 
+            tmpstrct.draw_rect(1:4, indices2) = [];
+            tmpstrct.rotation_angle(1, indices2) = [];
+            tmpstrct.filter_mode(1, indices2) = [];
+            tmpstrct.color(1:4, indices2) = [];
+            tmpstrct.image_pointer(1, indices2) = [];
+
+            Screen('DrawTextures', tmpstrct.image_pointer, ...
+                   tmpstrct.image_pointer, [], ...
+                   tmpstrct.draw_rect, ...
+                   tmpstrct.rotation_angle, ...
+                   tmpstrct.filter_mode, [], ...
+                   tmpstrct.color, [], [], []);
         end
 
         function Close(self)
