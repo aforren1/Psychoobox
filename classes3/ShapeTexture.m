@@ -22,7 +22,7 @@ classdef (Abstract) ShapeTexture < Texture
                                  all(all(~isnan(x(:, ~isnan(x(1,:)))))));
             self.p.addParamValue('fill_alpha', 255, @(x) all(x >= 0) && all(x <= 255));
             self.p.addParamValue('frame_alpha', 255, @(x) all(x >= 0) && all(x <= 255));
-            self.p.addParamValue('frame_stroke', 15, @(x) all(x >= 0));
+            self.p.addParamValue('frame_stroke', 20, @(x) all(x >= 0));
 
             self.draw_struct.color = [];
             self.draw_struct.image_pointer = [];
@@ -129,7 +129,7 @@ classdef (Abstract) ShapeTexture < Texture
             Screen('Close', self.proto_pointer);
             delete(self);
         end
-        
+
         function Set(self, indices, varargin)
             % set cell_matching here!
             cell_matching = {'fill_color', 'frame_color'};

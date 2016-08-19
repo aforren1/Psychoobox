@@ -36,7 +36,8 @@ f = @() rect.Prime();
 disp(timeit(f));
 rect.Draw(1:3);
 win.Flip();
-
-WaitSecs(2);
-rect.Close;
-win.Close;
+% 
+% WaitSecs(2);
+% rect.Close;
+% win.Close;
+% sca;
