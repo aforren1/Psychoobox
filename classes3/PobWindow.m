@@ -1,4 +1,4 @@
-classdef PsychWindow < SingularPsychMethods
+classdef PobWindow < SingularPsychMethods
 % PsychWindow Manipulate the display.
 %
 % PsychWindow Properties:
@@ -65,7 +65,7 @@ classdef PsychWindow < SingularPsychMethods
     end
 
     methods
-        function self = PsychWindow(varargin)
+        function self = PobWindow(varargin)
             self = self@SingularPsychMethods();
             self.p.FunctionName = 'PsychWindow';
             self.p.addParamValue('screen', 0, @(x) isnumeric(x) && x >= 0);

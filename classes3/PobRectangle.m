@@ -1,14 +1,14 @@
-classdef Oval < ShapeTexture
+classdef PobRectangle < ShapeTexture
     methods
-        function self = Oval()
+        function self = PobRectangle()
             self = self@ShapeTexture;
         end
 
         function Register(self, win_pointer)
             Register@ShapeTexture(self, win_pointer);
-            Screen('FillOval', self.proto_pointer(1), ...
+            Screen('FillRect', self.proto_pointer(1), ...
                    [255 255 255 255], Screen('Rect', self.proto_pointer(1)));
-            Screen('FrameOval', self.proto_pointer(2), ...
+            Screen('FrameRect', self.proto_pointer(2), ...
                   [255 255 255 255], Screen('Rect', self.proto_pointer(2)), ...
                   self.frame_stroke(1));
         end

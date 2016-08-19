@@ -1,4 +1,4 @@
-classdef Image < Texture
+classdef PobImage < Texture
 
     properties
         original_matrix
@@ -7,7 +7,7 @@ classdef Image < Texture
     end
 
     methods
-        function self = Image()
+        function self = PobImage()
             self.p.addParamValue('original_matrix', {}, @(x) iscell(x));
             self.p.addParamValue('modulate_color', [255 255 255 255], @(x) isnumeric(x) || isempty(x));
             self.draw_struct.image_pointer = [];
