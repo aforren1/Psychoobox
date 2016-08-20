@@ -22,7 +22,7 @@ classdef PobAudio < handle
             self.p = inputParser;
             self.p.FunctionName = 'PobAudio';
             self.p.addParamValue('device_id', [], @(x) isempty(x) || isnumeric(x));
-            self.p.addParamValue('mode', 1, @(x) ismember(x, {'play', 'record', 'both'}));
+            self.p.addParamValue('mode', 'play', @(x) ismember(x, {'play', 'record', 'both'}));
             self.p.addParamValue('req_latency_class', 1, @(x) any(x == 0:4));
             self.p.addParamValue('freq', 44100, @(x) isnumeric(x));
             self.p.addParamValue('channels', 2, @(x) isnumeric(x));
@@ -84,6 +84,17 @@ classdef PobAudio < handle
                 error('Unknown type.')
             end
         end % end add
+
+        function time = Play(self, index, when)
+            if ~exist('when', 'var')
+                when = 0;
+            end
+            time = PsychPortAudio('Start', self.slaves(index).pointer, 1, when, 1);
+        end
+
+        function Stop(self, index)
+            PsychPortAudio('Stop', self.slaves(index).pointer);
+        end
 
         function Remove(self, type, index)
             if strcmp(type, 'slave')
