@@ -16,13 +16,14 @@ rect.Register(win.pointer);
 rect.Prime();
 
 
-f = @() rect.Draw(1);
-disp(timeit(f));
+% f = @() rect.Draw(1);
+% disp(timeit(f));
+rect.Draw(1);
 win.Flip();
 
 rect.Set(1, 'fill_color', [nan nan nan]);
 rect.Prime();
-disp(timeit(f));
+rect.Draw(1);
 win.Flip;
 
 rect.Add(2:3, 'rel_x_pos', [0.7, .2], ...
@@ -31,9 +32,11 @@ rect.Add(2:3, 'rel_x_pos', [0.7, .2], ...
          'rel_y_scale', [.22, .1], ...
          'fill_color', [255 80 230; 33 88 102]', ...
          'frame_color', [120 120 120; nan nan nan]',...
-         'fill_alpha', [80, 140]);
-f = @() rect.Prime();
-disp(timeit(f));
+         'fill_alpha', [80, 140], ...
+         'rotation_angle', [0 0]);
+% f = @() rect.Prime();
+% disp(timeit(f));
+rect.Prime();
 rect.Draw(1:3);
 win.Flip();
 %

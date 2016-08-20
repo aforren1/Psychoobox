@@ -142,7 +142,7 @@
 ## @end deftypefn
 
 
-function retval = repelem(element, varargin)
+function retval = repelem2(element, varargin)
 
   if (nargin <= 1)
     error("repelem: Not enough input arguments")
