@@ -6,10 +6,10 @@ addpath('functions');
 addpath('res');
 
 aud = PobAudio();
-
+snd1 = audioread('res/scaled_coin.wav');
 aud.Add('slave', 1);
 aud.Add('slave', 2);
-aud.Add('buffer', snd);
+aud.Add('buffer', 1, 'audio', [snd1, snd1]');
 aud.Map(1, 1);
 aud.Map(2, 1);
 

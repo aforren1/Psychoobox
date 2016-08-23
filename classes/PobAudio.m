@@ -55,8 +55,9 @@ classdef PobAudio < handle
 
             self.p2 = inputParser;
             self.p2.FunctionName = 'Add_Slave';
-            self.p2.addParamValue('mode', @(x)  ismember(x, {'play', 'record', 'both'}));
+            self.p2.addParamValue('mode', 'play', @(x)  ismember(x, {'play', 'record', 'both'}));
             self.p2.addParamValue('select_channels', [], @(x) isempty(x) || isnumeric(x));
+            self.p2.addParamValue('channels', 2, @(x) x == 2); % TODO: allow independent control
 
             self.p3 = inputParser;
             self.p3.FunctionName = 'Add_Buffer';
@@ -96,11 +97,13 @@ classdef PobAudio < handle
             PsychPortAudio('Stop', self.slaves(index).pointer);
         end
 
-        function Remove(self, type, index)
+        function Remove(self, type, idx)
             if strcmp(type, 'slave')
-                PsychPortAudio('Close', self.slaves(index).pointer);
+                PsychPortAudio('Close', self.slaves(idx).pointer);
+                self.slaves(idx) = [];
             elseif strcmp(type, 'buffer')
-                PsychPortAudio('DeleteBuffer', self.buffers(index));
+                PsychPortAudio('DeleteBuffer', self.buffers(idx));
+                self.buffers(idx) = [];
             else
                 error('Unknown type.');
             end
@@ -113,11 +116,12 @@ classdef PobAudio < handle
 
         end
 
-        function Close(self, index)
-            if exist(index, 'var')
-                PsychPortAudio('Close', self.slaves(index).pointer);
+        function Close(self, idx)
+            if exist('idx', 'var')
+                PsychPortAudio('Close', self.slaves(idx).pointer);
             else
                 PsychPortAudio('Close');
+                delete(self);
             end
         end
 
