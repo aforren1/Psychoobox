@@ -1,3 +1,9 @@
+% addpath('tests');
+
+addpath('classes');
+addpath('functions');
+addpath('res');
+
 Screen('Preference', 'Verbosity', 1);
 Screen('Preference', 'SkipSyncTests', 1);
 win = PobWindow('screen', 0,...
@@ -16,13 +22,15 @@ ovl.Register(win.pointer);
 ovl.Prime();
 
 
-f = @() ovl.Draw(1);
-disp(timeit(f));
+%f = @() ovl.Draw(1);
+%disp(timeit(f));
+ovl.Draw(1);
 win.Flip();
 
 ovl.Set(1, 'fill_color', [nan nan nan]);
 ovl.Prime();
-disp(timeit(f));
+ovl.Draw(1);
+%disp(timeit(f));
 win.Flip;
 
 ovl.Add(2:3, 'rel_x_pos', [0.7, .2], ...
@@ -32,8 +40,9 @@ ovl.Add(2:3, 'rel_x_pos', [0.7, .2], ...
          'fill_color', [253.5 80 230; 33 88 102]', ...
          'frame_color', [120 120 120; nan nan nan]',...
          'fill_alpha', [80, 140]);
-f = @() ovl.Prime();
-disp(timeit(f));
+% f = @() ovl.Prime();
+% disp(timeit(f));
+ovl.Prime();
 ovl.Draw(1:3);
 win.Flip();
 

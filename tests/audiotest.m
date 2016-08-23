@@ -1,4 +1,10 @@
 
+% addpath('tests');
+
+addpath('classes');
+addpath('functions');
+addpath('res');
+
 aud = PobAudio();
 
 aud.Add('slave', 1);

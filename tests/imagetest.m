@@ -1,18 +1,23 @@
+% addpath('tests');
+
+addpath('classes');
+addpath('res');
+
 Screen('Preference', 'Verbosity', 1);
 Screen('Preference', 'SkipSyncTests', 1);
-win = PsychWindow('screen', 0,...
+win = PobWindow('screen', 0,...
                   'color', [0 0 0],...
                   'rect', [20 20 550 600]);
 
-img = imread('tests/cat.jpg');
+img = imread('res/cat.jpg');
 
-imgmat = Image;
+imgmat = PobImage;
 imgmat.Add(1, 'original_matrix', {img}, ...
            'rel_x_pos', 0.5, ...
            'rel_y_pos', 0.5, ...
            'rel_x_scale', 0.2, ...
            'rel_y_scale', 0.2);
-       
+
 imgmat.Register(win.pointer);
 imgmat.Prime();
 
@@ -31,3 +36,7 @@ t0 = GetSecs;
 imgmat.Draw([2:10, 1]);
 disp(GetSecs - t0);
 win.Flip();
+
+WaitSecs(2);
+win.Close;
+sca;

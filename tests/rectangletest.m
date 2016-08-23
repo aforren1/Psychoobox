@@ -1,3 +1,9 @@
+% addpath('tests');
+
+addpath('classes');
+addpath('functions');
+addpath('res');
+
 Screen('Preference', 'Verbosity', 1);
 Screen('Preference', 'SkipSyncTests', 1);
 win = PobWindow('screen', 0,...
@@ -39,8 +45,8 @@ rect.Add(2:3, 'rel_x_pos', [0.7, .2], ...
 rect.Prime();
 rect.Draw(1:3);
 win.Flip();
-%
-% WaitSecs(2);
-% rect.Close;
-% win.Close;
-% sca;
+
+WaitSecs(2);
+rect.Close;
+win.Close;
+sca;
