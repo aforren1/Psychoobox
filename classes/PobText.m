@@ -26,7 +26,7 @@ classdef PobText < SingularPsychMethods
     end
 
     methods
-        function self = PobText(value, varargin)
+        function self = PobText(varargin)
             self = self@SingularPsychMethods;
             self.p.FunctionName = 'PobText';
 
@@ -49,7 +49,7 @@ classdef PobText < SingularPsychMethods
             self.p.addParamValue('vert_spacing', 1, @(x) isnumeric(x));
             self.p.addParamValue('right_to_left', 0, @(x) any(x == [0, 1]));
 
-            self.p.parse(value, varargin{:});
+            self.p.parse(varargin{:});
             opts = self.p.Results;
             for fns = fieldnames(opts)'
                 self.(fns{1}) = opts.(fns{1});

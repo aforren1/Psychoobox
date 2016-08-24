@@ -53,14 +53,13 @@ classdef (Abstract) SingularPsychMethods < handle
         % Close Delete the handle to the object.
             delete(self);
         end
-
-        function new = Copy(self)
-            new = feval(class(self));
-
-            props = fieldnames(struct(self));
-            for ii = 1:length(props)
-                new.(props{ii}) = self.(props{ii});
-            end
+        
+        function new_obj = Copy(self)
+            fname = [tempname '.mat'];
+            save(fname, 'self');
+            new_obj = load(fname);
+            new_obj = new_obj.self;
+            delete(fname);
         end
         
     end % end methods
