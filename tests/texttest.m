@@ -30,4 +30,10 @@ txt2.Draw();
 
 win.Flip;
 WaitSecs(1);
+
+for ii = 1:500
+    txt2.Set('rel_x_pos', (sin(ii*.05) + 1)/2, 'rel_y_pos', (sin(ii*.02) + 1)/2);
+    txt2.Draw();
+    win.Flip;
+end
 win.Close;
