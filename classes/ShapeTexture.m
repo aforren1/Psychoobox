@@ -13,7 +13,7 @@ classdef (Abstract) ShapeTexture < Texture
 
     methods
         function self = ShapeTexture()
-            self@Texture;
+            self = self@Texture;
             self.p.addParamValue('fill_color', [nan nan nan], ...
                                  @(x) all(all(isnan(x(:, isnan(x(1,:)))))) &&...
                                  all(all(~isnan(x(:, ~isnan(x(1,:)))))));
