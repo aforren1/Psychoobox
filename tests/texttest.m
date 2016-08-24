@@ -21,11 +21,11 @@ txt.Draw();
 win.Flip();
 WaitSecs(1);
 
-txt.Set('rel_y_pos', 0.8, 'size', 30);
+txt.Set('rel_y_pos', 0.9, 'size', 30);
 txt.Draw();
 
 txt2 = txt.Copy();
-txt2.Set('rel_x_pos', 0.3, 'rel_y_pos', 0.3);
+txt2.Set('rel_x_pos', 0.9, 'rel_y_pos', 0.1, 'color', [230 40 100]);
 txt2.Draw();
 
 win.Flip;
