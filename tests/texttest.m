@@ -24,7 +24,15 @@ WaitSecs(1);
 txt.Set('rel_y_pos', 0.9, 'size', 30);
 txt.Draw();
 
-txt2 = txt.Copy();
+if IsOctave
+    txt2 = PobText('value', 'testme', 'size', 14, ...
+                  'color', [200 255 140], ...
+                  'rel_x_pos', 0.5, ...
+                  'rel_y_pos', 0.5);
+    txt2.Register(win.pointer);
+else
+    txt2 = txt.Copy();
+end
 txt2.Set('rel_x_pos', 0.9, 'rel_y_pos', 0.1, 'color', [230 40 100]);
 txt2.Draw();
 

@@ -53,15 +53,18 @@ classdef (Abstract) SingularPsychMethods < handle
         % Close Delete the handle to the object.
             delete(self);
         end
-        
+
         function new_obj = Copy(self)
+            if IsOctave
+                error('Copy unsupported for classdef objs until save works.')
+            end
             fname = [tempname '.mat'];
             save(fname, 'self');
             new_obj = load(fname);
             new_obj = new_obj.self;
             delete(fname);
         end
-        
+
     end % end methods
 
 end % end classdef
