@@ -104,10 +104,7 @@ classdef (Abstract) PluralPsychMethods < handle
                 end
                 % Manual hack for 4x4 rect array
                 if all(size(tmprct) == 4)
-                    [cx, cy] = RectCenter(tmprct);
-                    tmprct([1, 3], :) = tmprct([1, 3], :) + (reference_rect(3) - reference_rect(1)) - cx;
-                    tmprct([2, 4], :) = tmprct([2, 4], :) + (reference_rect(4) - reference_rect(2)) - cy;
-                    self.drawing_rect(:, 1:length(self.modified)) = tmprct;
+                   error('4-element rectangles are weird, fix...');
                 else
                     self.drawing_rect(:, 1:length(self.modified)) = CenterRectOnPoint(tmprct, ...
                                                  self.rel_x_pos(self.modified) * (reference_rect(3) - reference_rect(1)), ...
