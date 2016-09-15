@@ -1,9 +1,9 @@
 classdef PobSerial < handle
-% PsychSerial Communicate with real and imaginary serial devices.
+% PobSerial Communicate with real and imaginary serial devices.
 %
 % Interface to IOPort.
 %
-% PsychSerial Properties:
+% PobSerial Properties:
 %    port - String representing serial port, eg. '/dev/ttyS0' or 'COM3'. If empty, will make an educated guess on desired port.
 %    baud_rate - Specifies how quickly data is sent. Defaults to 9600.
 %    terminator - ASCII representation of the end-of-line. Defaults to 10 (newline).
@@ -28,7 +28,7 @@ classdef PobSerial < handle
 %    blocking_background_read - Blocking background reads (1) vs. polling reads (0). Defaults to 1.
 %    read_filter_flags - See `IOSerial OpenSerialPort?`. Defaults to 0.
 %
-% PsychSerial Methods:
+% PobSerial Methods:
 %
 %     Read - Blocking and non-blocking reads.
 %     Write - Blocking and non-blocking writes.
@@ -85,7 +85,7 @@ classdef PobSerial < handle
     end
 
     methods
-        function self = PsychSerial(varargin)
+        function self = PobSerial(varargin)
             self.p = inputParser;
             self.p.FunctionName = 'PobSerial';
             self.p.addParamValue('lenient', false, @(x) islogical(x));
