@@ -133,7 +133,8 @@ classdef PobWindow < SingularPsychMethods
             % win.Close()
             %
             % Closes the window.
-            Screen('Close', self.pointer);
+            %Screen('Close', self.pointer);
+            sca;
             delete(self);
         end
 
