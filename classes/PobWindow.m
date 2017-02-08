@@ -184,6 +184,10 @@ classdef PobWindow < SingularPsychMethods
             time_elapsed = Screen('DrawingFinished', self.pointer, dont_clear, sync);
         end
 
+        function delete(self)
+            sca;
+        end
+
     end % end methods
 
     methods (Static)

@@ -125,5 +125,9 @@ classdef PobAudio < handle
             end
         end
 
+        function delete(self)
+        % Try to protect against leaving residual audio things in the environment
+            PsychPortAudio('Close');
+        end
     end
 end
