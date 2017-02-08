@@ -1,10 +1,4 @@
 
-% addpath('tests');
-
-addpath('classes');
-addpath('functions');
-addpath('res');
-
 aud = PobAudio();
 snd1 = audioread('res/scaled_coin.wav');
 aud.Add('slave', 1);

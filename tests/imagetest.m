@@ -1,7 +1,3 @@
-% addpath('tests');
-
-addpath('classes');
-addpath('res');
 
 Screen('Preference', 'Verbosity', 1);
 Screen('Preference', 'SkipSyncTests', 1);
